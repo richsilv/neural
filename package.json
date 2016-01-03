@@ -1,0 +1,15 @@
+{
+  "name": "neural",
+  "version": "1.0.0",
+  "description": "Neural network package",
+  "main": "neural.js",
+  "scripts": {
+    "test": "test",
+    "browserify": "browserify neural-global.js -o neural-browser.js"
+  },
+  "author": "Richard Silverton",
+  "license": "ISC",
+  "dependencies": {
+    "mathjs": "^2.5.0"
+  }
+}
