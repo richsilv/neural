@@ -1,10 +1,11 @@
 var matrix = require('./matrix')
+var neuronId = 0
+var transferFunctions = {}
 
 function Neuron (params) {
   if (!(this instanceof Neuron)) return new Neuron(params)
 
-  var bias = params.bias || 0
-  var transfer = params.transfer || logSigmoid
+  var transfer = params.transfer || transferFunctions.logSigmoid
   var inputs = params.inputs || []
   var weights = params.weights || matrix.zeros(inputs.length)
   var outputNeurons = []
@@ -12,11 +13,16 @@ function Neuron (params) {
   var activationCache = null
   var inputSumCache = null
   var delta = 0
+  var id = (neuronId += 1)
 
   this.setInputs = function (newInputs) {
     if (newInputs.length !== inputs.length) weights = matrix.zeros(newInputs.length)
     this.invalidate()
     inputs = newInputs
+  }
+
+  this.getInputs = function () {
+    return inputs
   }
 
   this.getInputCount = function () {
@@ -28,16 +34,28 @@ function Neuron (params) {
     weights = newWeights
   }
 
-  this.getWeight = function (ind) {
-    return weights[ind]
+  this.getWeights = function () {
+    return weights
   }
 
-  this.updateBias = function (bias) {
-    bias = bias
+  this.getId = function () {
+    return id
   }
 
   this.getTransfer = function () {
     return transfer
+  }
+
+  this.setTransfer = function (fn) {
+    transfer = fn
+  }
+
+  this.getActivation = function () {
+    return activationCache
+  }
+
+  this.getInputSum = function () {
+    return inputSumCache
   }
 
   this.getDelta = function () {
@@ -46,6 +64,10 @@ function Neuron (params) {
 
   this.isOutput = function () {
     return expectedOutputVal !== null
+  }
+
+  this.setExpected = function (val) {
+    expectedOutputVal = val
   }
 
   this.updateOutputNeurons = function (neurons) {
@@ -61,13 +83,18 @@ function Neuron (params) {
 
   this.calc = function () {
     if (activationCache !== null) return activationCache
-    // console.log('Input Matrix', inputMatrix)
+    // console.log('Inputs', inputs.length)
     // console.log('weight', weights)
-    // console.log('bias', bias)
-    // console.log('Invoke Matrix', invokeMatrix(inputMatrix))
-    inputSumCache = matrix.mult(matrix.invoke(inputs), matrix.transpose(weights), true) + bias
+    // console.log('Invoke Matrix', matrix.invoke(inputs))
+    inputSumCache = matrix.mult(matrix.invoke(inputs), matrix.transpose(weights), true)
     activationCache = transfer(inputSumCache)
+    // console.log('Recalc', activationCache)
+    // console.log('****************')
     return activationCache
+  }
+
+  this.error = function () {
+    return activationCache - expectedOutputVal
   }
 
   this.invalidate = function () {
@@ -75,14 +102,16 @@ function Neuron (params) {
   }
 
   this.calcDelta = function () {
-    if (this.isOutput()) return this.calcOutputDelta()
-    delta = outputNeurons.reduce((total, neuron, ind) => {
-      return total + (neuron.getDelta() * neuron.getWeight(ind))
+    if (this.isOutput()) return this.calcDeltaOutputLayer()
+    delta = outputNeurons.reduce((total, neuron) => {
+      var index = neuron.getInputs().findIndex(input => input.getId && input.getId() === id)
+      return total + (neuron.getDelta() * neuron.getWeights()[index])
     }, 0) * transfer.derivative(inputSumCache, activationCache)
     return delta
   }
 
-  this.calcOutputDelta = function () {
+  this.calcDeltaOutputLayer = function () {
+    // console.log(expectedOutputVal, activationCache, inputSumCache, transfer.derivative(inputSumCache, activationCache))
     delta = -(expectedOutputVal - activationCache) * transfer.derivative(inputSumCache, activationCache)
     return delta
   }
@@ -91,16 +120,12 @@ function Neuron (params) {
     return activationCache * outputNeurons[ind].getDelta()
   }
 
-  this.calcBiasPartial = function (ind) {
-    return outputNeurons[ind].getDelta()
-  }
-
   this.getOutputWeightPartials = function () {
     return outputNeurons.map(neuron => activationCache * neuron.getDelta())
   }
 
-  this.getOutputBiasPartials = function () {
-    return outputNeurons.map(neuron => neuron.getDelta())
+  this.getInputWeightPartials = function () {
+    return inputs.map(input => (input instanceof Neuron) ? input.getActivation() * delta : delta)
   }
 
   this.randomizeWeights = function (max, min) {
@@ -116,54 +141,70 @@ function Neuron (params) {
 function Layer (params) {
   var neurons = []
   var isOutput = true
-  var isInput = false
+  var isInput = true
 
   if (!(this instanceof Layer)) return new Layer(params)
   if (params.neurons instanceof Array) {
     neurons = params.neurons
-  } else if (typeof params.neurons === 'number') {
-    neurons = Array(params.neurons).fill(new Neuron(params))
   }
-  if (params.isInput) isInput = true
+  if (typeof params.neurons === 'number') {
+    neurons = Array(params.neurons).fill(0).map(() => {
+      return new Neuron(params)
+    })
+  }
 
   this.isOutput = function () {
     return isOutput
   }
 
-  this.isInput = function () {
-    return isInput
+  this.setStatus = function (statuses) {
+    if (typeof statuses.input === 'boolean') isInput = statuses.isInput
+    if (typeof statuses.output === 'boolean') isOutput = statuses.isOutput
   }
 
-  this.plug = function (layer) {
-    layer.setInputs(neurons)
+  this.plug = function (outputLayer) {
+    // Add an extra input for bias
+    outputLayer.setStatus({ input: false })
+    outputLayer.setInputs(neurons.concat(1))
     isOutput = false
     neurons.forEach(neuron => {
-      neuron.updateOutputNeurons(layer.getNeurons())
+      neuron.updateOutputNeurons(outputLayer.getNeurons())
     })
-    return layer
+    return outputLayer
   }
 
   this.getNeurons = function () {
     return neurons
   }
 
-  this.setInputs = function (inputs) {
-    if (!(inputs instanceof Array)) throw new Error('Input must be an array')
-    if (inputs.some(input => !(input instanceof Array))) {
-      inputs = Array(neurons.length).fill(0).map(() => {
-        return inputs.slice(0)
+  this.setInputs = function (inputs, isInput) {
+    if (!(inputs instanceof Array)) throw new Error('Inputs must be an array')
+    if (isInput) {
+      if (inputs.length !== neurons.length) throw new Error(`Number of inputs (${inputs.length}) differs from number of neurons in input layer (${neurons.length})`)
+      isInput = true
+      neurons.forEach((neuron, ind) => {
+        neuron.setInputs([inputs[ind]])
+        neuron.updateWeights([1])
+      })
+      this.getNeurons().forEach(neuron => neuron.setTransfer(transferFunctions.linear))
+    } else {
+      if (inputs.some(input => !(input instanceof Array))) {
+        inputs = Array(neurons.length).fill(0).map(() => {
+          return inputs.slice(0)
+        })
+      }
+      inputs.forEach((inputArray, ind) => {
+        neurons[ind].setInputs(inputArray)
       })
     }
-    inputs.forEach((inputArray, ind) => {
-      neurons[ind].setInputs(inputArray)
-    })
     return true
   }
 
-  this.updateBias = function (bias) {
-    neurons.forEach(neuron => {
-      neuron.updateBias(bias)
-    })
+  this.setOutputs = function (outputs) {
+    if (!(outputs instanceof Array)) throw new Error('Outputs must be an array')
+    if (outputs.length !== neurons.length) throw new Error(`Number of outputs (${outputs.length}) differs from number of neurons in layer (${neurons.length})`)
+    neurons.forEach((neuron, ind) => neuron.setExpected(outputs[ind]))
+    return true
   }
 
   this.calc = function () {
@@ -175,21 +216,40 @@ function Layer (params) {
   }
 
   this.calcDeltas = function () {
-    return neurons.map(neuron => {
-      return neuron.calcDelta()
-    })
+    return neurons.map(neuron => neuron.calcDelta())
+  }
+
+  this.getWeights = function () {
+    return neurons.map(neuron => neuron.getWeights())
+  }
+
+  this.setWeights = function (weights) {
+    return neurons.map((neuron, neuronInd) => neuron.updateWeights(weights[neuronInd]))
+  }
+
+  this.getActivations = function () {
+    return neurons.map(neuron => neuron.getActivation())
+  }
+
+  this.getInputSums = function () {
+    return neurons.map(neuron => neuron.getInputSum())
+  }
+
+  this.getIds = function () {
+    return neurons.map(neuron => neuron.getId())
   }
 
   this.getOutputWeightPartials = function () {
     return neurons.map(neuron => neuron.getOutputWeightPartials())
   }
 
-  this.getOutputBiasPartials = function () {
-    return neurons.map(neuron => neuron.getOutputBiasPartials())
+  this.getInputWeightPartials = function () {
+    return neurons.map(neuron => neuron.getInputWeightPartials())
   }
 
-  this.randomizeWeights = function () {
-    neurons.forEach(neuron => neuron.randomizeWeights())
+  this.randomizeWeights = function (e) {
+    if (isInput) return
+    neurons.forEach(neuron => neuron.randomizeWeights(-e, e))
   }
 
   return this
@@ -198,6 +258,9 @@ function Layer (params) {
 function Network (params) {
   if (!(this instanceof Network)) return new Network(params)
   var layers = []
+  var alpha = (typeof params.alpha === 'number') ? params.alpha : 0.1
+  var lambda = (typeof params.lambda === 'number') ? params.lambda : 0.1
+  var onCalc = params.onCalc || function () {}
 
   if (!(params.layers instanceof Array)) throw new Error('You must supply a "layers" parameter which is an array')
   params.layers.forEach(layer => {
@@ -216,15 +279,6 @@ function Network (params) {
     return thisLayer
   }, null)
 
-  var inputLayer = new Layer({ neurons: layers[0].getNeurons().length })
-  var firstLayer = layers[0]
-  layers.unshift(inputLayer)
-  inputLayer.getNeurons().forEach((neuron, ind) => {
-    var firstLayerNeuron = firstLayer.getNeurons()[ind]
-    neuron.updateOutputNeurons([firstLayerNeuron])
-    firstLayerNeuron.setInputs([neuron])
-  })
-
   this.layerCount = function () {
     return layers.length
   }
@@ -242,27 +296,50 @@ function Network (params) {
   }
 
   this.setInputs = function (inputs) {
-    return this.inputLayer().setInputs(inputs)
+    return this.inputLayer().setInputs(inputs, true)
   }
 
-  this.calc = function () {
-    return this.outputLayer().calc()
+  this.setExpected = function (outputs) {
+    return this.outputLayer().setOutputs(outputs)
+  }
+
+  this.calc = function (trialInputs) {
+    if (trialInputs) {
+      this.invalidate()
+      this.setInputs(trialInputs)
+    }
+    var calc = this.outputLayer().calc()
+    onCalc.call(this, calc)
+    return calc
+  }
+
+  this.getActivations = function () {
+    return layers.map(layer => layer.getActivations())
+  }
+
+  this.getInputSums = function () {
+    return layers.map(layer => layer.getInputSums())
   }
 
   this.invalidate = function () {
     return layers.map(layer => layer.invalidate())
   }
 
-  this.randomizeWeights = function () {
-    layers.forEach(layer => layer.randomizeWeights())
+  this.randomizeWeights = function (e) {
+    layers.forEach(layer => layer.randomizeWeights(e))
   }
 
-  this.sumSqError = function (iter) {
+  this.forwardpropagate = function (iter) {
+    this.invalidate()
     this.setInputs(iter.inputs)
-    var outputs = this.outputLayer().calc()
-    return 0.5 * outputs.reduce((sum, output, ind) => {
-      return sum + Math.pow(output - iter.outputs[ind], 2)
-    })
+    this.setExpected(iter.outputs)
+    this.calc()
+  }
+
+  this.sumSqError = function () {
+    return 0.5 * this.outputLayer().getNeurons().reduce((sum, neuron) => {
+      return sum + Math.pow(neuron.error(), 2)
+    }, 0)
   }
 
   this.backpropagate = function () {
@@ -275,32 +352,103 @@ function Network (params) {
     })
   }
 
-  this.train = function (trainingData, epochs) {
-    var errorMap = layers.map(layer => {
-      layer.getNeurons().map(neuron => {
-        return matrix.zeros(neuron.getInputCount())
-      })
-    })
-    Array(epochs).fill(0).forEach(() => {
+  this.train = function (trainingData, epochs, opts) {
+    var minError
+    var bestWeights
+    var errorCache = []
+    opts = opts || {}
+    if (opts.randomize) this.randomizeWeights(0.1)
+    alpha = opts.alpha || alpha
+    lambda = opts.lamdba || lambda
+    onCalc = opts.onCalc || onCalc
+    Array(epochs).fill(0).forEach((ignore, ind) => {
       var data = trainingData.dataGenerator()
       var trial = data.next()
+      var error = 0
+      var inputWeightPartials
+      var newWeights = this.getWeights()
+      var weightMap = newWeights.map(layer => {
+        return layer.map(neuron => {
+          return matrix.zeros(neuron.length)
+        })
+      })
       while (!trial.done) {
         // Prime network and calculate partials
-        layers.forEach((layer, layerInd) => {
-          layer.getNeurons().forEach((neuron, neuronInd) => {
-
+        this.forwardpropagate(trial.value)
+        error += this.sumSqError()
+        this.backpropagate()
+        inputWeightPartials = this.getInputWeightPartials()
+        // console.log(this.getActivations())
+        inputWeightPartials.forEach((layer, layerInd) => {
+          if (layerInd === 0) return
+          layer.forEach((neuron, neuronInd) => {
+            neuron.forEach((inputWeight, inputWeightInd) => {
+              weightMap[layerInd][neuronInd][inputWeightInd] += inputWeight
+            })
           })
         })
         trial = data.next()
       }
+      // console.log(this.getWeights())
+      // console.log(this.getInputWeightPartials())
+      // console.log(this.getActivations())
+      weightMap.forEach((layer, layerInd) => {
+        if (layerInd === 0) return
+        layer.forEach((neuron, neuronInd) => {
+          var layerWeights = newWeights[layerInd][neuronInd]
+          // console.log(newWeights)
+          layerWeights.forEach((inputWeight, inputWeightInd) => {
+            // console.log(layerInd, neuronInd, inputInd, weightMap[layerInd][neuronInd][inputInd], trial.value)
+            layerWeights[inputWeightInd] -= alpha * ((weightMap[layerInd][neuronInd][inputWeightInd] / trial.value) + (lambda * layerWeights[inputWeightInd]))
+          })
+          layers[layerInd].getNeurons()[neuronInd].updateWeights(layerWeights)
+        })
+      })
+      if (typeof minError === 'undefined') minError = error
+      if (error < minError) {
+        minError = error
+        bestWeights = this.getWeights()
+      }
+      if (opts.dynamicAlpha) alpha = updateAlpha(alpha, error, errorCache)
+      console.log(`Epoch ${ind}: error is ${error}`)
     })
+    this.setWeights(bestWeights)
+    return { minError, alpha }
   }
 
-  this.showLayerWeights = function () {
+  this.getIds = function () {
+    return layers.map(layer => layer.getIds())
+  }
+  this.getOutputWeightPartials = function () {
     return layers.map(layer => layer.getOutputWeightPartials())
   }
+  this.getInputWeightPartials = function () {
+    return layers.map(layer => layer.getInputWeightPartials())
+  }
+  this.getWeights = function () {
+    return layers.map(layer => layer.getWeights())
+  }
+  this.setWeights = function (weights) {
+    return layers.map((layer, layerInd) => layer.setWeights(weights[layerInd]))
+  }
 
+  console.log(`Made neural network, alpha = ${alpha}, lambda = ${lambda}`)
   return this
+
+  function updateAlpha (alpha, error, errorCache) {
+    if (errorCache.length < 5) {
+      errorCache.push(error)
+      return alpha
+    }
+    var lastError = errorCache.slice(-1)[0]
+    var droppedError = errorCache.shift()
+    errorCache.push(error)
+    var averageError = errorCache.reduce((sum, err) => sum + err, 0) / errorCache.length
+    if (lastError < error) return alpha * 0.5
+    var improvementRatio = (droppedError - lastError) / (errorCache.length * averageError)
+    // console.log(`improvement ratio: ${improvementRatio}`)
+    return alpha * 1.03
+  }
 }
 
 function TrainingData (data) {
@@ -328,16 +476,28 @@ function randNum (max, min) {
   return (Math.random() * (max - min)) + min
 }
 
-function logSigmoid (x) {
+function addTransferFunction (key, fn, deriv) {
+  transferFunctions[key] = fn
+  transferFunctions[key].derivative = deriv
+}
+
+addTransferFunction('logSigmoid', function logSigmoid (x) {
   return (1 / (1 + Math.exp(-x)))
-}
-logSigmoid.derivative = function (inputSum, activation) {
+}, function (inputSum, activation) {
   return activation * (1 - activation)
-}
+})
+
+addTransferFunction('linear', function linear (x) {
+  return x
+}, function () {
+  return 1
+})
+
 
 module.exports = {
   Neuron,
   Layer,
   Network,
-  TrainingData
+  TrainingData,
+  transferFunctions
 }
