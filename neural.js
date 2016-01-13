@@ -31,11 +31,11 @@ function Neuron (params) {
 
   this.updateWeights = function (newWeights) {
     this.invalidate()
-    weights = newWeights
+    weights = newWeights.slice(0)
   }
 
   this.getWeights = function () {
-    return weights
+    return weights.slice(0)
   }
 
   this.getId = function () {
@@ -177,9 +177,9 @@ function Layer (params) {
     return neurons
   }
 
-  this.setInputs = function (inputs, isInput) {
+  this.setInputs = function (inputs, isInputLayer) {
     if (!(inputs instanceof Array)) throw new Error('Inputs must be an array')
-    if (isInput) {
+    if (isInputLayer) {
       if (inputs.length !== neurons.length) throw new Error(`Number of inputs (${inputs.length}) differs from number of neurons in input layer (${neurons.length})`)
       isInput = true
       neurons.forEach((neuron, ind) => {
@@ -205,6 +205,10 @@ function Layer (params) {
     if (outputs.length !== neurons.length) throw new Error(`Number of outputs (${outputs.length}) differs from number of neurons in layer (${neurons.length})`)
     neurons.forEach((neuron, ind) => neuron.setExpected(outputs[ind]))
     return true
+  }
+
+  this.setTransfer = function (fn) {
+    return neurons.forEach(neuron => neuron.setTransfer(fn))
   }
 
   this.calc = function () {
@@ -303,6 +307,14 @@ function Network (params) {
     return this.outputLayer().setOutputs(outputs)
   }
 
+  this.getAlpha = function () {
+    return alpha
+  }
+
+  this.setAlpha = function (newAlpha) {
+    return alpha = newAlpha
+  }
+
   this.calc = function (trialInputs) {
     if (trialInputs) {
       this.invalidate()
@@ -319,6 +331,10 @@ function Network (params) {
 
   this.getInputSums = function () {
     return layers.map(layer => layer.getInputSums())
+  }
+
+  this.writeWeights = function (filename) {
+
   }
 
   this.invalidate = function () {
@@ -389,16 +405,11 @@ function Network (params) {
         })
         trial = data.next()
       }
-      // console.log(this.getWeights())
-      // console.log(this.getInputWeightPartials())
-      // console.log(this.getActivations())
       weightMap.forEach((layer, layerInd) => {
         if (layerInd === 0) return
         layer.forEach((neuron, neuronInd) => {
           var layerWeights = newWeights[layerInd][neuronInd]
-          // console.log(newWeights)
           layerWeights.forEach((inputWeight, inputWeightInd) => {
-            // console.log(layerInd, neuronInd, inputInd, weightMap[layerInd][neuronInd][inputInd], trial.value)
             layerWeights[inputWeightInd] -= alpha * ((weightMap[layerInd][neuronInd][inputWeightInd] / trial.value) + (lambda * layerWeights[inputWeightInd]))
           })
           layers[layerInd].getNeurons()[neuronInd].updateWeights(layerWeights)
@@ -409,8 +420,8 @@ function Network (params) {
         minError = error
         bestWeights = this.getWeights()
       }
-      if (opts.dynamicAlpha) alpha = updateAlpha(alpha, error, errorCache)
-      console.log(`Epoch ${ind}: error is ${error}`)
+      alpha = updateAlpha(alpha, error, errorCache)
+      console.log(`Epoch ${ind}: mean error is ${Math.pow(error / trial.value, 0.5)}, alpha is ${alpha}`)
     })
     this.setWeights(bestWeights)
     return { minError, alpha }
@@ -429,7 +440,7 @@ function Network (params) {
     return layers.map(layer => layer.getWeights())
   }
   this.setWeights = function (weights) {
-    return layers.map((layer, layerInd) => layer.setWeights(weights[layerInd]))
+    layers.map((layer, layerInd) => layer.setWeights(weights[layerInd]))
   }
 
   console.log(`Made neural network, alpha = ${alpha}, lambda = ${lambda}`)
@@ -443,11 +454,11 @@ function Network (params) {
     var lastError = errorCache.slice(-1)[0]
     var droppedError = errorCache.shift()
     errorCache.push(error)
-    var averageError = errorCache.reduce((sum, err) => sum + err, 0) / errorCache.length
-    if (lastError < error) return alpha * 0.5
-    var improvementRatio = (droppedError - lastError) / (errorCache.length * averageError)
+    // var averageError = errorCache.reduce((sum, err) => sum + err, 0) / errorCache.length
+    if (lastError <= error) return alpha * 0.9
+    // var improvementRatio = (droppedError - lastError) / (errorCache.length * averageError)
     // console.log(`improvement ratio: ${improvementRatio}`)
-    return alpha * 1.03
+    return alpha * 1.01
   }
 }
 
@@ -483,14 +494,20 @@ function addTransferFunction (key, fn, deriv) {
 
 addTransferFunction('logSigmoid', function logSigmoid (x) {
   return (1 / (1 + Math.exp(-x)))
-}, function (inputSum, activation) {
+}, function logSigmoidDeriv (inputSum, activation) {
   return activation * (1 - activation)
 })
 
 addTransferFunction('linear', function linear (x) {
   return x
-}, function () {
+}, function linearDeriv () {
   return 1
+})
+
+addTransferFunction('rectifier', function rectifier (x) {
+  return Math.log(1 + Math.exp(x))
+}, function rectifierDeriv (inputSum) {
+  return (1 / (1 + Math.exp(-inputSum)))
 })
 
 
