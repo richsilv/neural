@@ -14,22 +14,34 @@ network.calc()
 
 var weightsFile = 'weights.json'
 var trainingData = new Neural.TrainingData(rawTrainingData)
-var dataRaw
-try {
-  dataRaw = fs.readFileSync(weightsFile)
-} catch (e) {}
-if (dataRaw) {
-  var data = JSON.parse(dataRaw)
-  network.setWeights(data.weights)
-  network.setAlpha(data.alpha)
-}
-var stats = network.train(trainingData, 1000, { lambda: 0.0001, dynamicAlpha: true })
-console.log('Min error', Math.pow(stats.minError / rawTrainingData.length, 0.5))
-console.log('Final alpha', stats.alpha)
-fs.writeFile(weightsFile, JSON.stringify({ weights: network.getWeights(), alpha: network.getAlpha() }), err => {
-  if (err) return console.error('Could not write weights', err.reason || err.error)
-  console.log(`Wrote weights to ${weightsFile}`)
+// var dataRaw
+// try {
+//   dataRaw = fs.readFileSync(weightsFile)
+// } catch (e) {}
+// if (dataRaw) {
+//   var data = JSON.parse(dataRaw)
+//   network.setWeights(data.weights)
+//   network.setAlpha(data.alpha)
+// }
+
+// var stats = network.train(trainingData, 1000, { lambda: 0.0001, dynamicAlpha: true })
+// console.log('Min error', Math.pow(stats.minError / rawTrainingData.length, 0.5))
+// console.log('Final alpha', stats.alpha)
+// fs.writeFile(weightsFile, JSON.stringify({ weights: network.getWeights(), alpha: network.getAlpha() }), err => {
+//   if (err) return console.error('Could not write weights', err.reason || err.error)
+//   console.log(`Wrote weights to ${weightsFile}`)
+// })
+
+var trainer = new Neural.Trainer(network, trainingData, {
+  randomize: true,
+  alpha: 0.5,
+  lambda: 0.01,
+  progressiveAlpha: {
+    creep: 1.01,
+    reversal: 0.9
+  }
 })
+console.log(trainer.gen.next())
 
 module.exports = {
   Neural,
