@@ -421,6 +421,22 @@ function Network (params) {
     })
     this.setWeights(bestWeights)
     return { minError, alpha }
+
+    function updateAlpha (alpha, error, errorCache) {
+      if (errorCache.length < 5) {
+        errorCache.push(error)
+        return alpha
+      }
+      var lastError = errorCache.slice(-1)[0]
+      var droppedError = errorCache.shift()
+      errorCache.push(error)
+      // var averageError = errorCache.reduce((sum, err) => sum + err, 0) / errorCache.length
+      if (lastError <= error) return alpha * 0.9
+      // var improvementRatio = (droppedError   lastError) / (errorCache.length * averageError)
+      // console.log(`improvement ratio: ${improvementRatio}`)
+      return alpha * 1.01
+    }
+
   }
 
   this.getIds = function () {
@@ -470,6 +486,8 @@ function Trainer (network, trainingData, opts) {
   if (!(this instanceof Trainer)) return new Trainer(network, trainingData, opts)
 
   var minError
+  var lastError = 0
+  var errorCache = []
   var bestWeights
   var dataLength = trainingData.dataLength()
   opts = opts || {}
@@ -482,18 +500,24 @@ function Trainer (network, trainingData, opts) {
     var reversal = opts.progressiveAlpha.reversal || 0.9
   }
   var onCalc = opts.onCalc || network.onCalc || function () {}
-  var layers = network.getLayers()
+  var alphaFloor = opts.alphaFloor || 0.00000001
   var epoch = 0
 
   function* trainerGen() {
-    while (!opts.threshold || minError > opts.threshold) {
-      var data = trainingData.dataGenerator()
-      var trial = data.next()
-      var error = 0
-      var lastError = 0
-      var inputWeightPartials
-      var newWeights = network.getWeights()
-      var weightMap = newWeights.map(layer => {
+    var data
+    var trial
+    var error = 0
+    var inputWeightPartials
+    var newWeights
+    var weightMap
+    var layers = network.getLayers()
+    while (alpha > alphaFloor && (!opts.threshold || !minError || minError > opts.threshold)) {
+      data = trainingData.dataGenerator()
+      trial = data.next()
+      error = 0
+      inputWeightPartials = null
+      newWeights = network.getWeights()
+      weightMap = newWeights.map(layer => {
         return layer.map(neuron => {
           return matrix.zeros(neuron.length)
         })
@@ -541,14 +565,7 @@ function Trainer (network, trainingData, opts) {
         alpha
       }
 
-      lastError = error
-      if (creep || reversal) {
-        if (lastError <= error) {
-          alpha *= reversal
-        } else {
-          alpha *= creep
-        }
-      }
+      if (creep || reversal) alpha = updateAlpha(alpha, error, errorCache)
       epoch += 1
     }
 
@@ -564,6 +581,21 @@ function Trainer (network, trainingData, opts) {
   this.gen = trainerGen()
 
   return this
+
+  function updateAlpha (alpha, error, errorCache) {
+    if (errorCache.length < 5) {
+      errorCache.push(error)
+      return alpha
+    }
+    var lastError = errorCache.slice(-1)[0]
+    var droppedError = errorCache.shift()
+    errorCache.push(error)
+    // var averageError = errorCache.reduce((sum, err) => sum + err, 0) / errorCache.length
+    if (lastError <= error) return alpha * 0.9
+    // var improvementRatio = (droppedError   lastError) / (errorCache.length * averageError)
+    // console.log(`improvement ratio: ${improvementRatio}`)
+    return alpha * 1.01
+  }
 }
 
 function updateAlpha (alpha, error, errorCache) {
@@ -579,6 +611,39 @@ function updateAlpha (alpha, error, errorCache) {
   // var improvementRatio = (droppedError - lastError) / (errorCache.length * averageError)
   // console.log(`improvement ratio: ${improvementRatio}`)
   return alpha * 1.01
+}
+
+function race(trainerArrayInput, rules, opts) {
+  opts = opts || {}
+  var epoch = 0
+  var trainerArray = trainerArrayInput.slice(0)
+  var lastResults = []
+  var errorThreshold = opts.errorThreshold || 0
+  var maxEpochs = opts.maxEpochs || null
+  var currMinError
+  while ((!currMinError || currMinError > errorThreshold) && (!maxEpochs || epoch <= maxEpochs)) {
+    lastResults = trainerArray.map((trainer, ind) => {
+      return lastResults[ind] && lastResults[ind].done ? lastResults[ind] : trainer.gen.next()
+    })
+    currMinError = calcCurrMinError(lastResults)
+    if (rules[epoch]) {
+      console.log(`Trimming to ${rules[epoch]} trainers`)
+      trainerArray = trim(trainerArray, lastResults, rules[epoch])
+    }
+    console.log(`Epoch ${epoch} - current global min error is ${currMinError}`)
+    epoch = epoch + 1
+  }
+
+  return trainerArray
+
+  function trim (trainerArray, lastResults, num) {
+    var indices = lastResults.slice(0).sort(results => results.value.error).map(results => lastResults.findIndex(theseResults => results.value.error === theseResults.value.error)).slice(0, num)
+    return indices.map(ind => trainerArray[ind])
+  }
+
+  function calcCurrMinError (lastResults) {
+    return lastResults.reduce((min, results) => (min === null || results.value.error < min) ? results.value.error : min, null)
+  }
 }
 
 function randNum (max, min) {
@@ -617,5 +682,6 @@ module.exports = {
   Network,
   TrainingData,
   Trainer,
+  race,
   transferFunctions
 }

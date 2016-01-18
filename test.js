@@ -1,7 +1,7 @@
 var Neural = require('./neural')
 var fs = require('fs')
 
-var network = new Neural.Network({ layers: [2, 5, 8, 5, 2], alpha: 0.1, lambda: 0, transfer: Neural.transferFunctions.rectifier })
+var network = new Neural.Network({ layers: [2, 5, 5, 2], alpha: 0.1, lambda: 0, transfer: Neural.transferFunctions.rectifier })
 network.outputLayer().setTransfer(Neural.transferFunctions.linear)
 // var rawTrainingData = [{inputs: [0, 2], outputs: [0.5]}, {inputs: [1, 1], outputs: [0.2]}, {inputs: [5, 0], outputs: [0.7]}]
 var rawTrainingData = makeTrainingData(10)
@@ -32,16 +32,20 @@ var trainingData = new Neural.TrainingData(rawTrainingData)
 //   console.log(`Wrote weights to ${weightsFile}`)
 // })
 
-var trainer = new Neural.Trainer(network, trainingData, {
-  randomize: true,
-  alpha: 0.5,
-  lambda: 0.01,
-  progressiveAlpha: {
-    creep: 1.01,
-    reversal: 0.9
-  }
+var trainerArray = Array(10).fill(0).map(() => {
+  return new Neural.Trainer(network, trainingData, {
+    randomize: true,
+    alpha: 0.5,
+    lambda: 0.01,
+    progressiveAlpha: {
+      creep: 1.01,
+      reversal: 0.9
+    },
+    threshold: 0.05
+  })
 })
-console.log(trainer.gen.next())
+var results = Neural.race(trainerArray, { 10: 5, 25: 3, 100: 2, 250: 1 }, { maxEpochs: 1000 })
+console.log(results)
 
 module.exports = {
   Neural,
