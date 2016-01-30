@@ -229,7 +229,7 @@ function Network (params) {
     })
   }
 
-  this.backpropagate = function () {
+  this.backPropagate = function () {
     this.invalidate()
     this.calc()
     var layerCount = this.layerCount()
