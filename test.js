@@ -1,10 +1,10 @@
 var Neural = require('./neural')
 var fs = require('fs')
 
-var network = new Neural.Network({ layers: [2, 5, 8, 5, 2], alpha: 0.1, lambda: 0, transfer: Neural.transferFunctions.rectifier })
+var network = new Neural.Network({ layers: [1, 5, 8, 5, 1], alpha: 0.1, lambda: 0, transfer: Neural.transferFunctions.rectifier })
 network.outputLayer().setTransfer(Neural.transferFunctions.linear)
 // var rawTrainingData = [{inputs: [0, 2], outputs: [0.5]}, {inputs: [1, 1], outputs: [0.2]}, {inputs: [5, 0], outputs: [0.7]}]
-var rawTrainingData = makeTrainingData(10)
+var rawTrainingData = makeTrainingDataSin(100)
 network.randomizeWeights(1)
 network.invalidate()
 network.calc()
@@ -18,11 +18,11 @@ var dataRaw
 try {
   dataRaw = fs.readFileSync(weightsFile)
 } catch (e) {}
-if (dataRaw) {
-  var data = JSON.parse(dataRaw)
-  network.setWeights(data.weights)
-  network.setAlpha(data.alpha)
-}
+// if (dataRaw) {
+//   var data = JSON.parse(dataRaw)
+//   network.setWeights(data.weights)
+//   network.setAlpha(data.alpha)
+// }
 var stats = network.train(trainingData, 1000, { lambda: 0.0001, dynamicAlpha: true })
 console.log('Min error', Math.pow(stats.minError / rawTrainingData.length, 0.5))
 console.log('Final alpha', stats.alpha)
