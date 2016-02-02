@@ -1,17 +1,24 @@
-var Neural = require('./neural')
+var neural = require('./neural')
 var fs = require('fs')
 // var sizeof = require('./sizeof')
 
-var network = new Neural.Network({ layers: [2, 5, 5, 2], alpha: 0.1, lambda: 0, transfer: Neural.transferFunctions.rectifier })
-network.outputLayer().setTransfer(Neural.transferFunctions.linear)
+var network = new neural.Network({ layers: [1, 2, 3, 2, 1], alpha: 0.1, lambda: 0, transfer: neural.transferFunctions.rectifier })
+network.outputLayer().setTransfer(neural.transferFunctions.linear)
 // var rawTrainingData = [{inputs: [0, 2], outputs: [0.5, 1.1]}, {inputs: [1, 1], outputs: [0.2, 0.5]}, {inputs: [5, 0], outputs: [0.7, 1]}]
-var rawTrainingData = makeTrainingData(10)
+var rawTrainingData = makeTrainingDataSin(100)
 // console.log('Sum-squared error', network.sumSqError(rawTrainingData[0]))
 // console.log('Backpropagate', network.backPropagate())
 // console.log('Ids', network.getIds())
 
-var weightsFile = 'weights.json'
-var trainingData = new Neural.TrainingData(rawTrainingData)
+// var weightsFile = 'weights.json'
+var trainingData = new neural.TrainingData(rawTrainingData)
+var trainer = neural.trainer(network, trainingData, {
+  alpha: 1,
+  lambda: 0.01,
+  progressiveAlpha: { creep: 1.01, reversal: 0.8 }
+})
+new Array(500).fill(0).forEach(() => console.log(trainer.next()))
+
 // var dataRaw
 // try {
 //   dataRaw = fs.readFileSync(weightsFile)
@@ -31,9 +38,9 @@ var trainingData = new Neural.TrainingData(rawTrainingData)
 // })
 
 // var trainerArray = Array(1).fill(0).map(() => {
-//   var network = new Neural.Network({ layers: [2, 5, 5, 2], alpha: 0.1, lambda: 0, transfer: Neural.transferFunctions.rectifier })
-//   network.outputLayer().setTransfer(Neural.transferFunctions.linear)
-//   return new Neural.Trainer(network, trainingData, {
+//   var network = new neural.Network({ layers: [2, 5, 5, 2], alpha: 0.1, lambda: 0, transfer: neural.transferFunctions.rectifier })
+//   network.outputLayer().setTransfer(neural.transferFunctions.linear)
+//   return new neural.Trainer(network, trainingData, {
 //     randomize: true,
 //     alpha: 0.5,
 //     lambda: 0.01,
@@ -48,12 +55,12 @@ var trainingData = new Neural.TrainingData(rawTrainingData)
 //   console.log(trainerArray[0].gen.next())
 // }
 
-// var results = Neural.race(trainerArray, { 10: 5, 25: 3, 100: 2, 250: 1 }, { maxEpochs: 100 })
+// var results = neural.race(trainerArray, { 10: 5, 25: 3, 100: 2, 250: 1 }, { maxEpochs: 100 })
 
 // console.log(results)
 
 module.exports = {
-  Neural,
+  neural,
   network,
   trainingData,
   makeTrainingData
