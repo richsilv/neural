@@ -14,10 +14,13 @@ var rawTrainingData = makeTrainingDataSin(100)
 var trainingData = new neural.TrainingData(rawTrainingData)
 var trainer = neural.trainer(network, trainingData, {
   alpha: 1,
-  lambda: 0.01,
-  progressiveAlpha: { creep: 1.01, reversal: 0.8 }
+  lambda: 0.0001,
+  progressiveAlpha: { creep: 1.01, reversal: 0.9 }
 })
-new Array(500).fill(0).forEach(() => console.log(trainer.next()))
+new Array(500).fill(0).forEach(() => {
+  var res = trainer.next().value
+  console.log(`Error: ${res.error}, alpha: ${res.alpha}`)
+})
 
 // var dataRaw
 // try {
