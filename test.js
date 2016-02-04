@@ -2,7 +2,7 @@ var neural = require('./neural')
 var fs = require('fs')
 // var sizeof = require('./sizeof')
 
-var network = new neural.Network({ layers: [1, 2, 3, 2, 1], alpha: 0.1, lambda: 0, transfer: neural.transferFunctions.rectifier })
+var network = new neural.Network({ layers: [1, 5, 5, 1], alpha: 0.1, lambda: 0, transfer: neural.transferFunctions.rectifier })
 network.outputLayer().setTransfer(neural.transferFunctions.linear)
 // var rawTrainingData = [{inputs: [0, 2], outputs: [0.5, 1.1]}, {inputs: [1, 1], outputs: [0.2, 0.5]}, {inputs: [5, 0], outputs: [0.7, 1]}]
 var rawTrainingData = makeTrainingDataSin(100)
@@ -15,9 +15,9 @@ var trainingData = new neural.TrainingData(rawTrainingData)
 var trainer = neural.trainer(network, trainingData, {
   alpha: 1,
   lambda: 0.0001,
-  progressiveAlpha: { creep: 1.01, reversal: 0.9 }
+  progressiveAlpha: { creep: 1.01, reversal: 0.9, floor: 0.01 },
 })
-new Array(500).fill(0).forEach(() => {
+new Array(10000).fill(0).forEach(() => {
   var res = trainer.next().value
   console.log(`Error: ${res.error}, alpha: ${res.alpha}`)
 })

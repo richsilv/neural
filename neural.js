@@ -409,13 +409,16 @@ function* trainer (network, trainingData, opts) {
   var dataLength = trainingData.dataLength()
   var progressiveAlpha = opts.progressiveAlpha ? {
     creep: opts.progressiveAlpha.creep,
-    reversal: opts.progressiveAlpha.reversal
+    reversal: opts.progressiveAlpha.reversal,
+    floor: opts.progressiveAlpha.floor
   } : false
+  var verbose = opts.verbose
   var minError
   var bestWeights
   var epoch = 0
   var complete = false
 
+  network.randomizeWeights(1)
   while (!complete) {
     complete = yield runEpoch()
   }
@@ -425,11 +428,15 @@ function* trainer (network, trainingData, opts) {
     var dataGen = trainingData.dataGenerator()
     var weightMap = makeWeightMap()
     var error = 0
+    var outputs = []
 
     for (var trial of dataGen) {
       error += feedForwardAndCalcError(trial)
       network.backPropagate()
       weightMap = updateWeightMap(weightMap)
+      if (verbose) {
+        outputs.push(network.outputLayer().getActivations())
+      }
     }
 
     var weightedError = Math.pow(error / dataLength, 0.5)
@@ -439,13 +446,15 @@ function* trainer (network, trainingData, opts) {
       minError = weightedError
       bestWeights = network.getWeights()
     }
-    return {
+    var result = {
       epoch: epoch,
       error: weightedError,
       minError: minError,
       bestWeights: bestWeights,
       alpha: alpha
     }
+    if (verbose) result.outputs = outputs
+    return result
   }
 
   function makeWeightMap () {
@@ -491,6 +500,7 @@ function* trainer (network, trainingData, opts) {
         if (error <= lastError) alpha *= progressiveAlpha.creep
         else alpha *= progressiveAlpha.reversal
       }
+      if (progressiveAlpha.floor && alpha < progressiveAlpha.floor) alpha = progressiveAlpha.floor
       lastError = error
       error = yield alpha
     }
