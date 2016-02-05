@@ -103,12 +103,15 @@ function Neuron (params) {
       var index = neuron.getInputs().findIndex(input => input.getId && input.getId() === id)
       return total + (neuron.getDelta() * neuron.getWeights()[index])
     }, 0) * transfer.derivative(inputSumCache, activationCache)
+    check(delta, 'Delta non-output layer')
     return delta
   }
 
   this.calcDeltaOutputLayer = function () {
-    // console.log(expectedOutputVal, activationCache, inputSumCache, transfer.derivative(inputSumCache, activationCache))
     delta = -(expectedOutputVal - activationCache) * transfer.derivative(inputSumCache, activationCache)
+    check.call(this, expectedOutputVal, 'expectedOutputVal')
+    check.call(this, activationCache, 'activationCache')
+    check.call(this, inputSumCache, 'inputSumCache')
     return delta
   }
 
@@ -317,9 +320,7 @@ function Network (params) {
       this.invalidate()
       this.setInputs(trialInputs)
     }
-    var calc = this.outputLayer().calc()
-    onCalc.call(this, calc)
-    return calc
+    return this.outputLayer().calc()
   }
 
   this.getActivations = function () {
@@ -342,7 +343,7 @@ function Network (params) {
     this.invalidate()
     this.setInputs(iter.inputs)
     this.setExpected(iter.outputs)
-    this.calc()
+    return this.calc()
   }
 
   this.sumSqError = function () {
@@ -418,7 +419,7 @@ function* trainer (network, trainingData, opts) {
   var epoch = 0
   var complete = false
 
-  network.randomizeWeights(1)
+  network.randomizeWeights(0.00000001)
   while (!complete) {
     complete = yield runEpoch()
   }
@@ -588,6 +589,12 @@ function networkSum(X, Y, ignoreLayers) {
       })
     })
   })
+}
+
+function check (value, message) {
+  if (isNaN(value)) {
+    throw new Error(`Overflow: ${message}`)
+  }
 }
 
 module.exports = {
