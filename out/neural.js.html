@@ -1,4 +1,32 @@
-var matrix = require('./matrix')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: neural.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: neural.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var matrix = require('./matrix')
 var neuronId = 0
 var transferFunctions = {}
 
@@ -178,7 +206,7 @@ function Neuron (params) {
   this.calcDelta = function () {
     if (this.isOutput()) return this._calcDeltaOutputLayer()
     delta = outputNeurons.reduce((total, neuron) => {
-      var index = neuron.getInputs().findIndex(input => input.getId && input.getId() === id)
+      var index = neuron.getInputs().findIndex(input => input.getId &amp;&amp; input.getId() === id)
       return total + (neuron.getDelta() * neuron.getWeights()[index])
     }, 0) * transfer.derivative(inputSumCache, activationCache)
     check(delta, 'Delta non-output layer')
@@ -228,8 +256,9 @@ function Neuron (params) {
  * Creates a new Network Layer
  * @constructor
  * @param {Object} params
- * @param {number or Array} [params.neurons]  The Neurons in the layer. If an integer is passed, that number of Neurons will be constructed for this Layer.
+ * @param {number or Array} [params.neurons] The Neurons in the layer.  If an integer is passed, that number of Neurons will be constructed for this Layer.
  */
+
 function Layer (params) {
   var neurons = []
   var isOutput = true
@@ -426,15 +455,11 @@ function Layer (params) {
   return this
 }
 
-/**
- * Creates a new Network
- * @constructor
- * @param {Object} params
- * @param {Array} [params.layers] An array of layer sizes, indicating the number of Neurons in each Layer (and implicitly, the number of Layers).
- */
 function Network (params) {
   if (!(this instanceof Network)) return new Network(params)
   var layers = []
+  var alpha = (typeof params.alpha === 'number') ? params.alpha : 0.1
+  var lambda = (typeof params.lambda === 'number') ? params.lambda : 0.1
   this.id = randomId()
 
   if (!(params.layers instanceof Array)) throw new Error('You must supply a "layers" parameter which is an array')
@@ -454,125 +479,75 @@ function Network (params) {
     return thisLayer
   }, null)
 
-  /**
-   * Returns the number of layers in the network.
-   * @return {number}
-   */
   this.layerCount = function () {
     return layers.length
   }
 
-  /**
-   * Returns the Layer instances which make up the network (from input to output).
-   * @return {Array}  Array of Layers.
-   */
   this.getLayers = function () {
     return layers
   }
 
-  /**
-   * Returns the Network's input Layer.
-   * @return {Layer}
-   */
   this.inputLayer = function () {
     return layers[0]
   }
 
-  /**
-   * Returns the Network's output Layer.
-   * @return {Layer}
-   */
   this.outputLayer = function () {
     return layers[layers.length - 1]
   }
 
-  /**
-   * Sets the inputs for the Network's input Layer.
-   * @see {@link Layer#setInputs} for more details.
-   * @param  {Array} inputs An array of inputs, which must be of the same length as the number of Neurons in the input Layer.  Note that whilst these could be Neurons, in an input Layer they would more normally be numbers or functions.
-   */
   this.setInputs = function (inputs) {
-    this.inputLayer().setInputs(inputs, true)
+    return this.inputLayer().setInputs(inputs, true)
   }
 
-  /**
-   * Sets the expected outputs for the Network's output Layer.
-   * @see {@link Layer#setOutputs} for more details.
-   * @param  {Array} outputs An array of expected values for the output Layer.  This must be the same length as the number of Neurons in the output Layer.
-   */
   this.setExpected = function (outputs) {
-    this.outputLayer().setExpected(outputs)
+    return this.outputLayer().setExpected(outputs)
   }
 
-  /**
-   * Calculates the output values for the Network based on the current inputs using forward propagation. Note that if Neuron activation values have been calculated since the previous invalidation, these will be used rather than recalculation occurring.
-   * @return {Array}             The output layer activation values resulting from the current network inputs.
-   */
-  this.calc = function () {
+  this.getAlpha = function () {
+    return alpha
+  }
+
+  this.setAlpha = function (newAlpha) {
+    return alpha = newAlpha
+  }
+
+  this.calc = function (trialInputs) {
+    if (trialInputs) {
+      this.invalidate()
+      this.setInputs(trialInputs)
+    }
     return this.outputLayer().calc()
   }
 
-  /**
-   * Gets all activation values for all Neurons in all Layers in the Network.
-   * @return {Array of Arrays} Activation values.
-   */
   this.getActivations = function () {
     return layers.map(layer => layer.getActivations())
   }
 
-  /**
-   * Gets all input sums for all Neurons in all Layers in the Network.
-   * @see {@link Neuron#getInputSum} for more details.
-   * @return {Array of Arrays} Input sums.
-   */
   this.getInputSums = function () {
     return layers.map(layer => layer.getInputSums())
   }
 
-  /**
-   * Marks the activation cache for every Neuron in the Network as invalid.
-   */
   this.invalidate = function () {
-    layers.forEach(layer => layer.invalidate())
+    return layers.map(layer => layer.invalidate())
   }
 
-  /**
-   * Randomizes the input weights for all the Neurons in the Network.
-   * @see {@link Layer#randomizeWeights} for more details.
-   * @param  {type} e Resulting weights will be in the interval [-e, e].
-   */
   this.randomizeWeights = function (e) {
     layers.forEach(layer => layer.randomizeWeights(e))
   }
 
-  /**
-   * Peforms a full forward propagation of the Network using the supplied input values.  Also optionally sets the expected output values for error calculation and training.
-   * @param  {Object} trial
-   * @param  {Array} [trial.inputs] An array of input values to feed into the Network's input Layer.  This must be the same length as the number of Neurons in the input Layer.
-   * @param  {Array} [trial.outputs=] An array of output values to mark as the output Layer's expected activation values.  This must be the same length as the number of Neurons in the output Layer.
-   * @return {Array}      The actual output values resulting from the supplied inputs with the current network weights.
-   */
-  this.forwardPropagate = function (trial) {
+  this.forwardPropagate = function (iter) {
     this.invalidate()
-    this.setInputs(trial.inputs)
-    this.setExpected(trial.outputs)
+    this.setInputs(iter.inputs)
+    this.setExpected(iter.outputs)
     return this.calc()
   }
 
-  /**
-   * Returns the sum-squared error resulting from comparing the calculated Network outputs with the expected outputs, using the current inputs and weights.
-   * @return {number}
-   */
   this.sumSqError = function () {
     return 0.5 * this.outputLayer().getNeurons().reduce((sum, neuron) => {
       return sum + Math.pow(neuron.error(), 2)
     }, 0)
   }
 
-  /**
-   * Applies the back-propagation algorithm to recalculate the deltas for each Neuron in the Network, working from the output Layer to the input Layer.
-   * @return {Array of Arrays}  The deltas for the Neurons in each of the output Layers.
-   */
   this.backPropagate = function () {
     this.invalidate()
     this.calc()
@@ -583,48 +558,23 @@ function Network (params) {
     })
   }
 
-  /**
-   * Returns the ids for all the Neurons in the Network.
-   * @return {Array of Arrays}
-   */
   this.getIds = function () {
     return layers.map(layer => layer.getIds())
   }
-
-  /**
-   * Gets the output weight partials for each Neuron in the Network
-   * @see {@link Neuron#getInputWeightPartials}
-   * @return {Array of Array of Arrays}  Input weight partials for each Neuron.
-   */   
   this.getOutputWeightPartials = function () {
     return layers.map(layer => layer.getOutputWeightPartials())
   }
-
-  /**
-   * Gets the output weight partials for each Neuron in the Network
-   * @see {@link Neuron#getOutputWeightPartials}
-   * @return {Array of Array of Arrays}  Output weight partials for each Neuron.
-   */
   this.getInputWeightPartials = function () {
     return layers.map(layer => layer.getInputWeightPartials())
   }
-
-  /**
-   * Gets the input weights for each Neuron in the network.
-   * @return {Array of Array of Arrays}  Input weights by input, Neuron and Layer.
-   */
   this.getWeights = function () {
     return layers.map(layer => layer.getWeights())
   }
-
-  /**
-   * Sets the weights for the entire network in one go.  Useful for rebuilding a trained network.
-   * @param  {Array of Array of Arrays} The inner-most Arrays refer to the input weights for each Neuron.  These should be arranged in Arrays corresponding to each Neuron in a Layer.  Finally, the weights for each Layer should make up the outer-most Array.
-   */
   this.setWeights = function (weights) {
     layers.map((layer, layerInd) => layer.setWeights(weights[layerInd].slice(0)))
   }
 
+  console.log(`Made neural network, alpha = ${alpha}, lambda = ${lambda}`)
   return this
 }
 
@@ -687,7 +637,7 @@ function* trainer (network, trainingData, opts) {
 
     var weightedError = Math.pow(error / dataLength, 0.5)
     if (progressiveAlpha) alpha = alphaUpdater.next(weightedError).value
-    if (!minError || weightedError < minError) {
+    if (!minError || weightedError &lt; minError) {
       minError = weightedError
       bestWeights = network.getWeights()
     }
@@ -727,11 +677,11 @@ function* trainer (network, trainingData, opts) {
     var error
     var lastError
     while (true)  {
-      if (error && lastError) {
-        if (error <= lastError) alpha *= progressiveAlpha.creep
+      if (error &amp;&amp; lastError) {
+        if (error &lt;= lastError) alpha *= progressiveAlpha.creep
         else alpha *= progressiveAlpha.reversal
       }
-      if (progressiveAlpha.floor && alpha < progressiveAlpha.floor) alpha = progressiveAlpha.floor
+      if (progressiveAlpha.floor &amp;&amp; alpha &lt; progressiveAlpha.floor) alpha = progressiveAlpha.floor
       lastError = error
       error = yield alpha
     }
@@ -765,9 +715,9 @@ function race (trainerArrayInput, rules, opts) {
   var errorThreshold = opts.errorThreshold || 0
   var maxEpochs = opts.maxEpochs || null
   var currMinError
-  while ((!currMinError || currMinError > errorThreshold) && (!maxEpochs || epoch <= maxEpochs)) {
+  while ((!currMinError || currMinError > errorThreshold) &amp;&amp; (!maxEpochs || epoch &lt;= maxEpochs)) {
     lastResults = trainerArray.map((trainer, ind) => {
-      return (lastResults[ind] && lastResults[ind].done) ? lastResults[ind] : trainer.gen.next()
+      return (lastResults[ind] &amp;&amp; lastResults[ind].done) ? lastResults[ind] : trainer.gen.next()
     })
     currMinError = calcCurrMinError(lastResults)
     if (rules[epoch]) {
@@ -786,7 +736,7 @@ function race (trainerArrayInput, rules, opts) {
   }
 
   function calcCurrMinError (lastResults) {
-    return lastResults.reduce((min, results) => (min === null || results.value.error < min) ? results.value.error : min, null)
+    return lastResults.reduce((min, results) => (min === null || results.value.error &lt; min) ? results.value.error : min, null)
   }
 }
 
@@ -828,7 +778,7 @@ function randomId () {
 
 function networkSum(X, Y, ignoreLayers) {
   return X.map((xLayer, layerInd) => {
-    if (ignoreLayers && ignoreLayers.some(ind => ind === layerInd)) return xLayer
+    if (ignoreLayers &amp;&amp; ignoreLayers.some(ind => ind === layerInd)) return xLayer
     return xLayer.map((xNeuron, neuronInd) => {
       return xNeuron.map((xWeight, weightInd) => {
         return xWeight + Y[layerInd][neuronInd][weightInd]
@@ -853,3 +803,26 @@ module.exports = {
   race,
   transferFunctions
 }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Layer.html">Layer</a></li><li><a href="Neuron.html">Neuron</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Feb 05 2016 16:19:49 GMT+0000 (GMT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
