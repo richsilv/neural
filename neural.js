@@ -439,7 +439,7 @@ function* trainer (network, trainingData, opts) {
     }
 
     var weightedError = Math.pow(error / dataLength, 0.5)
-    // if (progressiveAlpha) alpha = alphaUpdater.next(weightedError).value
+    if (progressiveAlpha) alpha = alphaUpdater.next(weightedError).value
     if (!minError || weightedError < minError) {
       minError = weightedError
       bestWeights = network.getWeights()
