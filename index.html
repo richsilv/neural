@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Neural by richsilv</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Neural</h1>
+        <h2>Neural Network playground for Node and the browser</h2>
+        <a href="https://github.com/richsilv/neural" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <p><a name="module_neural"></a></p>
+
+<h2>
+<a id="neural" class="anchor" href="#neural" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neural</h2>
+
+<p>A neural network toolkit for Node.js and the browser.</p>
+
+<ul>
+<li>
+<a href="#module_neural">neural</a>
+
+<ul>
+<li>
+<a href="#module_neural..Neuron">~Neuron</a>
+
+<ul>
+<li><a href="#new_module_neural..Neuron_new">new Neuron(params)</a></li>
+<li><a href="#module_neural..Neuron+setInputs">.setInputs(newInputs)</a></li>
+<li>
+<a href="#module_neural..Neuron+getInputs">.getInputs()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+getInputCount">.getInputCount()</a> ⇒ <code>number</code>
+</li>
+<li><a href="#module_neural..Neuron+updateWeights">.updateWeights(newWeights)</a></li>
+<li>
+<a href="#module_neural..Neuron+getWeights">.getWeights()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+getId">.getId()</a> ⇒ <code>number</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+getTransfer">.getTransfer()</a> ⇒ <code>fn</code>
+</li>
+<li><a href="#module_neural..Neuron+setTransfer">.setTransfer(The)</a></li>
+<li>
+<a href="#module_neural..Neuron+getActivation">.getActivation()</a> ⇒ <code>number</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+getInputSum">.getInputSum()</a> ⇒ <code>number</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+getDelta">.getDelta()</a> ⇒ <code>number</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+isOutput">.isOutput()</a> ⇒ <code>boolean</code>
+</li>
+<li><a href="#module_neural..Neuron+setExpected">.setExpected(Expected)</a></li>
+<li><a href="#module_neural..Neuron+addInput">.addInput(The)</a></li>
+<li>
+<a href="#module_neural..Neuron+calc">.calc()</a> ⇒ <code>number</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+error">.error()</a> ⇒ <code>number</code>
+</li>
+<li><a href="#module_neural..Neuron+invalidate">.invalidate()</a></li>
+<li>
+<a href="#module_neural..Neuron+calcDelta">.calcDelta()</a> ⇒ <code>number</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+getOutputWeightPartials">.getOutputWeightPartials()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+getInputWeightPartials">.getInputWeightPartials()</a> ⇒ <code>Array</code>
+</li>
+<li><a href="#module_neural..Neuron+randomizeWeights">.randomizeWeights([max], [min])</a></li>
+</ul>
+</li>
+<li>
+<a href="#module_neural..Layer">~Layer</a>
+
+<ul>
+<li><a href="#new_module_neural..Layer_new">new Layer(params)</a></li>
+<li>
+<a href="#module_neural..Layer+isOutput">.isOutput()</a> ⇒ <code>boolean</code>
+</li>
+<li><a href="#module_neural..Layer+setStatus">.setStatus(statuses)</a></li>
+<li>
+<a href="#module_neural..Layer+plug">.plug(outputLayer)</a> ⇒ <code>Layer</code>
+</li>
+<li>
+<a href="#module_neural..Layer+getNeurons">.getNeurons()</a> ⇒ <code>Array</code>
+</li>
+<li><a href="#module_neural..Layer+setInputs">.setInputs(inputs, isInputLayer)</a></li>
+<li><a href="#module_neural..Layer+setExpected">.setExpected(An)</a></li>
+<li><a href="#module_neural..Layer+setTransfer">.setTransfer(fn)</a></li>
+<li>
+<a href="#module_neural..Layer+calc">.calc()</a> ⇒ <code>Array</code>
+</li>
+<li><a href="#module_neural..Layer+invalidate">.invalidate()</a></li>
+<li>
+<a href="#module_neural..Layer+calcDeltas">.calcDeltas()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Layer+getWeights">.getWeights()</a> ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</li>
+<li><a href="#module_neural..Layer+setWeights">.setWeights(weights)</a></li>
+<li>
+<a href="#module_neural..Layer+getActivations">.getActivations()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Layer+getInputSums">.getInputSums()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Layer+getIds">.getIds()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Layer+getOutputWeightPartials">.getOutputWeightPartials()</a> ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</li>
+<li>
+<a href="#module_neural..Layer+getInputWeightPartials">.getInputWeightPartials()</a> ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</li>
+<li><a href="#module_neural..Layer+randomizeWeights">.randomizeWeights(e)</a></li>
+</ul>
+</li>
+<li>
+<a href="#module_neural..Network">~Network</a>
+
+<ul>
+<li><a href="#new_module_neural..Network_new">new Network(params)</a></li>
+<li>
+<a href="#module_neural..Network+layerCount">.layerCount()</a> ⇒ <code>number</code>
+</li>
+<li>
+<a href="#module_neural..Network+getLayers">.getLayers()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Network+inputLayer">.inputLayer()</a> ⇒ <code>Layer</code>
+</li>
+<li>
+<a href="#module_neural..Network+outputLayer">.outputLayer()</a> ⇒ <code>Layer</code>
+</li>
+<li><a href="#module_neural..Network+setInputs">.setInputs(inputs)</a></li>
+<li><a href="#module_neural..Network+setExpected">.setExpected(outputs)</a></li>
+<li>
+<a href="#module_neural..Network+calc">.calc()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Network+getActivations">.getActivations()</a> ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</li>
+<li>
+<a href="#module_neural..Network+getInputSums">.getInputSums()</a> ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</li>
+<li><a href="#module_neural..Network+invalidate">.invalidate()</a></li>
+<li><a href="#module_neural..Network+randomizeWeights">.randomizeWeights(e)</a></li>
+<li>
+<a href="#module_neural..Network+forwardPropagate">.forwardPropagate(trial)</a> ⇒ <code>Array.&lt;number&gt;</code>
+</li>
+<li>
+<a href="#module_neural..Network+sumSqError">.sumSqError()</a> ⇒ <code>number</code>
+</li>
+<li>
+<a href="#module_neural..Network+backPropagate">.backPropagate()</a> ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</li>
+<li>
+<a href="#module_neural..Network+getIds">.getIds()</a> ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</li>
+<li>
+<a href="#module_neural..Network+getOutputWeightPartials">.getOutputWeightPartials()</a> ⇒ <code>Array.&lt;Array.&lt;Array.&lt;number&gt;&gt;&gt;</code>
+</li>
+<li>
+<a href="#module_neural..Network+getInputWeightPartials">.getInputWeightPartials()</a> ⇒ <code>Array.&lt;Array.&lt;Array.&lt;number&gt;&gt;&gt;</code>
+</li>
+<li>
+<a href="#module_neural..Network+getWeights">.getWeights()</a> ⇒ <code>Array.&lt;Array.&lt;Array.&lt;number&gt;&gt;&gt;</code>
+</li>
+<li><a href="#module_neural..Network+setWeights">.setWeights(The)</a></li>
+</ul>
+</li>
+<li>
+<a href="#module_neural..TrainingData">~TrainingData</a>
+
+<ul>
+<li><a href="#new_module_neural..TrainingData_new">new TrainingData(data)</a></li>
+<li>
+<a href="#module_neural..TrainingData+dataGenerator">.dataGenerator()</a> ⇒ <code>generator</code>
+</li>
+<li>
+<a href="#module_neural..TrainingData+dataLength">.dataLength()</a> ⇒ <code>number</code>
+</li>
+</ul>
+</li>
+<li>
+<a href="#module_neural..transferFunctions">~transferFunctions</a> : <code>object</code>
+</li>
+<li><a href="#module_neural..addTransferFunction">~addTransferFunction(key, fn, deriv)</a></li>
+<li>
+<a href="#module_neural..one-to-one">~one-to-one</a> ⇒ <code>number</code>
+</li>
+</ul>
+</li>
+</ul>
+
+<p><a name="module_neural..Neuron"></a></p>
+
+<h3>
+<a id="neuralneuron" class="anchor" href="#neuralneuron" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neural~Neuron</h3>
+
+<p><strong>Kind</strong>: inner class of <code><a href="#module_neural">neural</a></code>  </p>
+
+<ul>
+<li>
+<a href="#module_neural..Neuron">~Neuron</a>
+
+<ul>
+<li><a href="#new_module_neural..Neuron_new">new Neuron(params)</a></li>
+<li><a href="#module_neural..Neuron+setInputs">.setInputs(newInputs)</a></li>
+<li>
+<a href="#module_neural..Neuron+getInputs">.getInputs()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+getInputCount">.getInputCount()</a> ⇒ <code>number</code>
+</li>
+<li><a href="#module_neural..Neuron+updateWeights">.updateWeights(newWeights)</a></li>
+<li>
+<a href="#module_neural..Neuron+getWeights">.getWeights()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+getId">.getId()</a> ⇒ <code>number</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+getTransfer">.getTransfer()</a> ⇒ <code>fn</code>
+</li>
+<li><a href="#module_neural..Neuron+setTransfer">.setTransfer(The)</a></li>
+<li>
+<a href="#module_neural..Neuron+getActivation">.getActivation()</a> ⇒ <code>number</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+getInputSum">.getInputSum()</a> ⇒ <code>number</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+getDelta">.getDelta()</a> ⇒ <code>number</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+isOutput">.isOutput()</a> ⇒ <code>boolean</code>
+</li>
+<li><a href="#module_neural..Neuron+setExpected">.setExpected(Expected)</a></li>
+<li><a href="#module_neural..Neuron+addInput">.addInput(The)</a></li>
+<li>
+<a href="#module_neural..Neuron+calc">.calc()</a> ⇒ <code>number</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+error">.error()</a> ⇒ <code>number</code>
+</li>
+<li><a href="#module_neural..Neuron+invalidate">.invalidate()</a></li>
+<li>
+<a href="#module_neural..Neuron+calcDelta">.calcDelta()</a> ⇒ <code>number</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+getOutputWeightPartials">.getOutputWeightPartials()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Neuron+getInputWeightPartials">.getInputWeightPartials()</a> ⇒ <code>Array</code>
+</li>
+<li><a href="#module_neural..Neuron+randomizeWeights">.randomizeWeights([max], [min])</a></li>
+</ul>
+</li>
+</ul>
+
+<p><a name="new_module_neural..Neuron_new"></a></p>
+
+<h4>
+<a id="new-neuronparams" class="anchor" href="#new-neuronparams" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>new Neuron(params)</h4>
+
+<p>Creates a new Neuron</p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>params</td>
+<td><code>Object</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[params.transfer]</td>
+<td><code>function</code></td>
+<td><code>'logSigmoid'</code></td>
+<td>The neuron's transfer function.</td>
+</tr>
+<tr>
+<td>[params.inputs]</td>
+<td><code>Array.&lt;number&gt;</code></td>
+<td></td>
+<td>An array of inputs to the neuron, which can be numbers, functions returning a number or Neurons</td>
+</tr>
+<tr>
+<td>[params.weights]</td>
+<td><code>Array.&lt;number&gt;</code></td>
+<td></td>
+<td>The input weights with which to initialise the Neuron.  Defaults to zeros.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Neuron+setInputs"></a></p>
+
+<h4>
+<a id="neuronsetinputsnewinputs" class="anchor" href="#neuronsetinputsnewinputs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.setInputs(newInputs)</h4>
+
+<p>Resets the inputs to a neuron.  Any existing inputs are removed.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code>  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>newInputs</td>
+<td><code>Array.&lt;(number|function()|Neuron)&gt;</code></td>
+<td>Array of inputs to the Neuron, which can be numbers, functions returning a number or Neurons.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Neuron+getInputs"></a></p>
+
+<h4>
+<a id="neurongetinputs--array" class="anchor" href="#neurongetinputs--array" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.getInputs() ⇒ <code>Array</code>
+</h4>
+
+<p>Returns the Neurons inputs.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code><br>
+<strong>Returns</strong>: <code>Array</code> - The Neurons inputs, which could be numbers, functions returning a number or Neurons.<br>
+<a name="module_neural..Neuron+getInputCount"></a></p>
+
+<h4>
+<a id="neurongetinputcount--number" class="anchor" href="#neurongetinputcount--number" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.getInputCount() ⇒ <code>number</code>
+</h4>
+
+<p>Returns the number of inputs feeding this neuron.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code><br>
+<strong>Returns</strong>: <code>number</code> - count of inputs, which could be numbers, functions returning a number of Neurons.<br>
+<a name="module_neural..Neuron+updateWeights"></a></p>
+
+<h4>
+<a id="neuronupdateweightsnewweights" class="anchor" href="#neuronupdateweightsnewweights" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.updateWeights(newWeights)</h4>
+
+<p>Updates the Neuron's weights.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code>  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>newWeights</td>
+<td><code>Array.&lt;number&gt;</code></td>
+<td>An array of numbers, which must be of the same length as the Neuron's array of inputs.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Neuron+getWeights"></a></p>
+
+<h4>
+<a id="neurongetweights--array" class="anchor" href="#neurongetweights--array" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.getWeights() ⇒ <code>Array</code>
+</h4>
+
+<p>Returns the Neuron's weights.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code><br>
+<strong>Returns</strong>: <code>Array</code> - The neuron's weights (numbers).<br>
+<a name="module_neural..Neuron+getId"></a></p>
+
+<h4>
+<a id="neurongetid--number" class="anchor" href="#neurongetid--number" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.getId() ⇒ <code>number</code>
+</h4>
+
+<p>Returns the Neuron's id.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code><br>
+<strong>Returns</strong>: <code>number</code> - The Neuron's id, which is unique at the module level.<br>
+<a name="module_neural..Neuron+getTransfer"></a></p>
+
+<h4>
+<a id="neurongettransfer--fn" class="anchor" href="#neurongettransfer--fn" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.getTransfer() ⇒ <code>fn</code>
+</h4>
+
+<p>Get the Neuron's transfer function</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code><br>
+<strong>Returns</strong>: <code>fn</code> - The transfer function<br>
+<a name="module_neural..Neuron+setTransfer"></a></p>
+
+<h4>
+<a id="neuronsettransferthe" class="anchor" href="#neuronsettransferthe" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.setTransfer(The)</h4>
+
+<p>Sets the Neuron's transfer function</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code>  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The</td>
+<td><code>function</code></td>
+<td>replacement transfer function (see section on transfer functions for details of acceptable formats).</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Neuron+getActivation"></a></p>
+
+<h4>
+<a id="neurongetactivation--number" class="anchor" href="#neurongetactivation--number" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.getActivation() ⇒ <code>number</code>
+</h4>
+
+<p>Gets the Neuron's current activation value.  Note that this does NOT recalculate the value if input values or weights have changed.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code><br>
+<strong>Returns</strong>: <code>number</code> - The most recently-calculated activation value.<br>
+<a name="module_neural..Neuron+getInputSum"></a></p>
+
+<h4>
+<a id="neurongetinputsum--number" class="anchor" href="#neurongetinputsum--number" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.getInputSum() ⇒ <code>number</code>
+</h4>
+
+<p>Gets the Neuron's current input sum.  This is the weighted sum of inputs, prior to having been passed through the transfer function. Note that this does NOT recalculate the value if input values or weights have changed.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code><br>
+<strong>Returns</strong>: <code>number</code> - The most recently-calculated input sum.<br>
+<a name="module_neural..Neuron+getDelta"></a></p>
+
+<h4>
+<a id="neurongetdelta--number" class="anchor" href="#neurongetdelta--number" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.getDelta() ⇒ <code>number</code>
+</h4>
+
+<p>Gets the Neuron's current delta.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code><br>
+<strong>Returns</strong>: <code>number</code> - The Neuron's delta.<br>
+<a name="module_neural..Neuron+isOutput"></a></p>
+
+<h4>
+<a id="neuronisoutput--boolean" class="anchor" href="#neuronisoutput--boolean" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.isOutput() ⇒ <code>boolean</code>
+</h4>
+
+<p>Indicates whether the Neuron is in the output layer of a Network</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code><br>
+<a name="module_neural..Neuron+setExpected"></a></p>
+
+<h4>
+<a id="neuronsetexpectedexpected" class="anchor" href="#neuronsetexpectedexpected" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.setExpected(Expected)</h4>
+
+<p>Sets the expected activation value (from training data) of the Neuron</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code>  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Expected</td>
+<td><code>number</code></td>
+<td>output value</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Neuron+addInput"></a></p>
+
+<h4>
+<a id="neuronaddinputthe" class="anchor" href="#neuronaddinputthe" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.addInput(The)</h4>
+
+<p>Plugs in a new input to the Neuron, which is initialised with a respective weight of 0.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code>  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The</td>
+<td>
+<code>number</code> | <code>function</code> | <code>Neuron</code>
+</td>
+<td>new input.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Neuron+calc"></a></p>
+
+<h4>
+<a id="neuroncalc--number" class="anchor" href="#neuroncalc--number" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.calc() ⇒ <code>number</code>
+</h4>
+
+<p>Recalculates the activation value, recalculating all the input nodes in turn as required.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code><br>
+<strong>Returns</strong>: <code>number</code> - The recalculated activation value.<br>
+<a name="module_neural..Neuron+error"></a></p>
+
+<h4>
+<a id="neuronerror--number" class="anchor" href="#neuronerror--number" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.error() ⇒ <code>number</code>
+</h4>
+
+<p>The difference between the most recently calculated activation value and the last expected value to be supplied.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code><br>
+<strong>Returns</strong>: <code>number</code> - Difference between activation and expected values.<br>
+<a name="module_neural..Neuron+invalidate"></a></p>
+
+<h4>
+<a id="neuroninvalidate" class="anchor" href="#neuroninvalidate" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.invalidate()</h4>
+
+<p>Marks the Neuron as in need of recalculation by clearing the activation value cache.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code><br>
+<a name="module_neural..Neuron+calcDelta"></a></p>
+
+<h4>
+<a id="neuroncalcdelta--number" class="anchor" href="#neuroncalcdelta--number" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.calcDelta() ⇒ <code>number</code>
+</h4>
+
+<p>Recalculates the Neuron's delta.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code><br>
+<strong>Returns</strong>: <code>number</code> - The new delta.<br>
+<a name="module_neural..Neuron+getOutputWeightPartials"></a></p>
+
+<h4>
+<a id="neurongetoutputweightpartials--array" class="anchor" href="#neurongetoutputweightpartials--array" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.getOutputWeightPartials() ⇒ <code>Array</code>
+</h4>
+
+<p>Returns the partial derivative of the Neuron's error with respect to its output weights.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code><br>
+<strong>Returns</strong>: <code>Array</code> - The output weight partials.<br>
+<a name="module_neural..Neuron+getInputWeightPartials"></a></p>
+
+<h4>
+<a id="neurongetinputweightpartials--array" class="anchor" href="#neurongetinputweightpartials--array" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.getInputWeightPartials() ⇒ <code>Array</code>
+</h4>
+
+<p>Returns the partial derivatives of the input Neurons errors with respect to this Neuron's input weights.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code><br>
+<strong>Returns</strong>: <code>Array</code> - The input weight partials.<br>
+<a name="module_neural..Neuron+randomizeWeights"></a></p>
+
+<h4>
+<a id="neuronrandomizeweightsmax-min" class="anchor" href="#neuronrandomizeweightsmax-min" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neuron.randomizeWeights([max], [min])</h4>
+
+<p>Randomizes the Neuron's input weights.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Neuron">Neuron</a></code>  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[max]</td>
+<td><code>number</code></td>
+<td><code>0.000001</code></td>
+<td>Maximum possible weight.</td>
+</tr>
+<tr>
+<td>[min]</td>
+<td><code>number</code></td>
+<td><code>0</code></td>
+<td>Minimum possible weights.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Layer"></a></p>
+
+<h3>
+<a id="neurallayer" class="anchor" href="#neurallayer" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neural~Layer</h3>
+
+<p><strong>Kind</strong>: inner class of <code><a href="#module_neural">neural</a></code>  </p>
+
+<ul>
+<li>
+<a href="#module_neural..Layer">~Layer</a>
+
+<ul>
+<li><a href="#new_module_neural..Layer_new">new Layer(params)</a></li>
+<li>
+<a href="#module_neural..Layer+isOutput">.isOutput()</a> ⇒ <code>boolean</code>
+</li>
+<li><a href="#module_neural..Layer+setStatus">.setStatus(statuses)</a></li>
+<li>
+<a href="#module_neural..Layer+plug">.plug(outputLayer)</a> ⇒ <code>Layer</code>
+</li>
+<li>
+<a href="#module_neural..Layer+getNeurons">.getNeurons()</a> ⇒ <code>Array</code>
+</li>
+<li><a href="#module_neural..Layer+setInputs">.setInputs(inputs, isInputLayer)</a></li>
+<li><a href="#module_neural..Layer+setExpected">.setExpected(An)</a></li>
+<li><a href="#module_neural..Layer+setTransfer">.setTransfer(fn)</a></li>
+<li>
+<a href="#module_neural..Layer+calc">.calc()</a> ⇒ <code>Array</code>
+</li>
+<li><a href="#module_neural..Layer+invalidate">.invalidate()</a></li>
+<li>
+<a href="#module_neural..Layer+calcDeltas">.calcDeltas()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Layer+getWeights">.getWeights()</a> ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</li>
+<li><a href="#module_neural..Layer+setWeights">.setWeights(weights)</a></li>
+<li>
+<a href="#module_neural..Layer+getActivations">.getActivations()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Layer+getInputSums">.getInputSums()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Layer+getIds">.getIds()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Layer+getOutputWeightPartials">.getOutputWeightPartials()</a> ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</li>
+<li>
+<a href="#module_neural..Layer+getInputWeightPartials">.getInputWeightPartials()</a> ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</li>
+<li><a href="#module_neural..Layer+randomizeWeights">.randomizeWeights(e)</a></li>
+</ul>
+</li>
+</ul>
+
+<p><a name="new_module_neural..Layer_new"></a></p>
+
+<h4>
+<a id="new-layerparams" class="anchor" href="#new-layerparams" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>new Layer(params)</h4>
+
+<p>Creates a new Network Layer</p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>params</td>
+<td><code>Object</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[params.neurons]</td>
+<td>
+<code>number</code> | <code>Array.&lt;Neuron&gt;</code>
+</td>
+<td>The Neurons in the layer. If an integer is passed, that number of Neurons will be constructed for this Layer.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Layer+isOutput"></a></p>
+
+<h4>
+<a id="layerisoutput--boolean" class="anchor" href="#layerisoutput--boolean" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.isOutput() ⇒ <code>boolean</code>
+</h4>
+
+<p>Returns whether this an output layer.  Note that all layers are output layers by default, until they have their neurons plugged into another layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code><br>
+<a name="module_neural..Layer+setStatus"></a></p>
+
+<h4>
+<a id="layersetstatusstatuses" class="anchor" href="#layersetstatusstatuses" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.setStatus(statuses)</h4>
+
+<p>Overrides the layer's status.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code>  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>statuses</td>
+<td><code>Object</code></td>
+<td></td>
+</tr>
+<tr>
+<td>statuses.input</td>
+<td><code>boolean</code></td>
+<td>Whether the layer should be marked as an input layer.</td>
+</tr>
+<tr>
+<td>statuses.output</td>
+<td><code>boolean</code></td>
+<td>Whether the layer should be marked as an output layer.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Layer+plug"></a></p>
+
+<h4>
+<a id="layerplugoutputlayer--layer" class="anchor" href="#layerplugoutputlayer--layer" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.plug(outputLayer) ⇒ <code>Layer</code>
+</h4>
+
+<p>Plugs this Layer into another Layer such that the Neurons in this Layer become input Neurons for the supplied Layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code><br>
+<strong>Returns</strong>: <code>Layer</code> - The supplied output Layer for chaining purposes.  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>outputLayer</td>
+<td><code>Layer</code></td>
+<td>The Layer which will have its Neurons take the Neurons in this Layer as inputs.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Layer+getNeurons"></a></p>
+
+<h4>
+<a id="layergetneurons--array" class="anchor" href="#layergetneurons--array" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.getNeurons() ⇒ <code>Array</code>
+</h4>
+
+<p>Returns the Neurons which make up this layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code><br>
+<a name="module_neural..Layer+setInputs"></a></p>
+
+<h4>
+<a id="layersetinputsinputs-isinputlayer" class="anchor" href="#layersetinputsinputs-isinputlayer" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.setInputs(inputs, isInputLayer)</h4>
+
+<p>Sets the inputs for all the Neurons in this Layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code>  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>inputs</td>
+<td><code>Array.&lt;(number|function()|Neuron)&gt;</code></td>
+<td>An array of inputs, which could be numbers, functions returning a number or Neurons.</td>
+</tr>
+<tr>
+<td>isInputLayer</td>
+<td><code>boolean</code></td>
+<td>Indicates whether this is intended to be the input layer in a Network.  If set to true, rather than each of the supplied inputs being wired into each of the Neurons in this Layer, they will be mapped one-to-one, with no bias (i.e. passed straight through to the next layer).</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Layer+setExpected"></a></p>
+
+<h4>
+<a id="layersetexpectedan" class="anchor" href="#layersetexpectedan" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.setExpected(An)</h4>
+
+<p>Sets the expected values for the activation values of the Neurons in this Layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code>  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>An</td>
+<td><code>Array.&lt;number&gt;</code></td>
+<td>array of output values (numbers), equal in length to the number of Neurons in this Layer.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Layer+setTransfer"></a></p>
+
+<h4>
+<a id="layersettransferfn" class="anchor" href="#layersettransferfn" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.setTransfer(fn)</h4>
+
+<p>Sets the transfer function for every Neuron in this Layer</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code>  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fn</td>
+<td><code>function</code></td>
+<td>The replacement transfer function (see section on transfer functions for details of acceptable formats).</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Layer+calc"></a></p>
+
+<h4>
+<a id="layercalc--array" class="anchor" href="#layercalc--array" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.calc() ⇒ <code>Array</code>
+</h4>
+
+<p>Recalculates the activation values for all of the Neurons in this Layer, recalculating their input Neuron values in sequence as required.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code><br>
+<strong>Returns</strong>: <code>Array</code> - The recalculated activation values.<br>
+<a name="module_neural..Layer+invalidate"></a></p>
+
+<h4>
+<a id="layerinvalidate" class="anchor" href="#layerinvalidate" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.invalidate()</h4>
+
+<p>Invalidates the activation cache for all the Neurons in this Layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code><br>
+<a name="module_neural..Layer+calcDeltas"></a></p>
+
+<h4>
+<a id="layercalcdeltas--array" class="anchor" href="#layercalcdeltas--array" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.calcDeltas() ⇒ <code>Array</code>
+</h4>
+
+<p>Recalculates the deltas for all Neurons in this Layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code><br>
+<strong>Returns</strong>: <code>Array</code> - The deltas for the Neurons in this Layer.<br>
+<a name="module_neural..Layer+getWeights"></a></p>
+
+<h4>
+<a id="layergetweights--arrayarraynumber" class="anchor" href="#layergetweights--arrayarraynumber" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.getWeights() ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</h4>
+
+<p>Gets the weights for each Neuron in this Layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code><br>
+<strong>Returns</strong>: <code>Array.&lt;Array.&lt;number&gt;&gt;</code> - The weights for each Neuron in this Layer.<br>
+<a name="module_neural..Layer+setWeights"></a></p>
+
+<h4>
+<a id="layersetweightsweights" class="anchor" href="#layersetweightsweights" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.setWeights(weights)</h4>
+
+<p>Update the input weights for the Neurons in this Layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code>  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>weights</td>
+<td><code>Array.&lt;Array.&lt;number&gt;&gt;</code></td>
+<td>The new weights for each Neuron in this Layer.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Layer+getActivations"></a></p>
+
+<h4>
+<a id="layergetactivations--array" class="anchor" href="#layergetactivations--array" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.getActivations() ⇒ <code>Array</code>
+</h4>
+
+<p>Returns the activation values for the Neurons in this Layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code><br>
+<strong>Returns</strong>: <code>Array</code> - The activation values.<br>
+<a name="module_neural..Layer+getInputSums"></a></p>
+
+<h4>
+<a id="layergetinputsums--array" class="anchor" href="#layergetinputsums--array" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.getInputSums() ⇒ <code>Array</code>
+</h4>
+
+<p>Returns the input sums for the Neurons in this Layer (the weighted sums of inputs for each Neuron before they've been passed through the transfer function).</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code><br>
+<strong>Returns</strong>: <code>Array</code> - The input sums.<br>
+<a name="module_neural..Layer+getIds"></a></p>
+
+<h4>
+<a id="layergetids--array" class="anchor" href="#layergetids--array" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.getIds() ⇒ <code>Array</code>
+</h4>
+
+<p>Returns the ids for the Neurons in this Layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code><br>
+<strong>Returns</strong>: <code>Array</code> - An array of ids.<br>
+<a name="module_neural..Layer+getOutputWeightPartials"></a></p>
+
+<h4>
+<a id="layergetoutputweightpartials--arrayarraynumber" class="anchor" href="#layergetoutputweightpartials--arrayarraynumber" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.getOutputWeightPartials() ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</h4>
+
+<p>Returns the output weight partials for the Neurons in this Layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code><br>
+<strong>Returns</strong>: <code>Array.&lt;Array.&lt;number&gt;&gt;</code> - Array of output weight partials for each Neuron.<br>
+<strong>See</strong>: <a href="Neuron#getOutputWeightPartials">Neuron#getOutputWeightPartials</a><br>
+<a name="module_neural..Layer+getInputWeightPartials"></a></p>
+
+<h4>
+<a id="layergetinputweightpartials--arrayarraynumber" class="anchor" href="#layergetinputweightpartials--arrayarraynumber" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.getInputWeightPartials() ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</h4>
+
+<p>Returns the input weight partials for the Neurons in this Layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code><br>
+<strong>Returns</strong>: <code>Array.&lt;Array.&lt;number&gt;&gt;</code> - Array of input weight partials for each Neuron.<br>
+<strong>See</strong>: <a href="Neuron#getInputWeightPartials">Neuron#getInputWeightPartials</a><br>
+<a name="module_neural..Layer+randomizeWeights"></a></p>
+
+<h4>
+<a id="layerrandomizeweightse" class="anchor" href="#layerrandomizeweightse" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>layer.randomizeWeights(e)</h4>
+
+<p>Randomizes the weights for all of the Neurons in this Layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Layer">Layer</a></code>  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>e</td>
+<td><code>number</code></td>
+<td>The randomized weights will be in the range [-e, e].</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Network"></a></p>
+
+<h3>
+<a id="neuralnetwork" class="anchor" href="#neuralnetwork" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neural~Network</h3>
+
+<p><strong>Kind</strong>: inner class of <code><a href="#module_neural">neural</a></code>  </p>
+
+<ul>
+<li>
+<a href="#module_neural..Network">~Network</a>
+
+<ul>
+<li><a href="#new_module_neural..Network_new">new Network(params)</a></li>
+<li>
+<a href="#module_neural..Network+layerCount">.layerCount()</a> ⇒ <code>number</code>
+</li>
+<li>
+<a href="#module_neural..Network+getLayers">.getLayers()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Network+inputLayer">.inputLayer()</a> ⇒ <code>Layer</code>
+</li>
+<li>
+<a href="#module_neural..Network+outputLayer">.outputLayer()</a> ⇒ <code>Layer</code>
+</li>
+<li><a href="#module_neural..Network+setInputs">.setInputs(inputs)</a></li>
+<li><a href="#module_neural..Network+setExpected">.setExpected(outputs)</a></li>
+<li>
+<a href="#module_neural..Network+calc">.calc()</a> ⇒ <code>Array</code>
+</li>
+<li>
+<a href="#module_neural..Network+getActivations">.getActivations()</a> ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</li>
+<li>
+<a href="#module_neural..Network+getInputSums">.getInputSums()</a> ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</li>
+<li><a href="#module_neural..Network+invalidate">.invalidate()</a></li>
+<li><a href="#module_neural..Network+randomizeWeights">.randomizeWeights(e)</a></li>
+<li>
+<a href="#module_neural..Network+forwardPropagate">.forwardPropagate(trial)</a> ⇒ <code>Array.&lt;number&gt;</code>
+</li>
+<li>
+<a href="#module_neural..Network+sumSqError">.sumSqError()</a> ⇒ <code>number</code>
+</li>
+<li>
+<a href="#module_neural..Network+backPropagate">.backPropagate()</a> ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</li>
+<li>
+<a href="#module_neural..Network+getIds">.getIds()</a> ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</li>
+<li>
+<a href="#module_neural..Network+getOutputWeightPartials">.getOutputWeightPartials()</a> ⇒ <code>Array.&lt;Array.&lt;Array.&lt;number&gt;&gt;&gt;</code>
+</li>
+<li>
+<a href="#module_neural..Network+getInputWeightPartials">.getInputWeightPartials()</a> ⇒ <code>Array.&lt;Array.&lt;Array.&lt;number&gt;&gt;&gt;</code>
+</li>
+<li>
+<a href="#module_neural..Network+getWeights">.getWeights()</a> ⇒ <code>Array.&lt;Array.&lt;Array.&lt;number&gt;&gt;&gt;</code>
+</li>
+<li><a href="#module_neural..Network+setWeights">.setWeights(The)</a></li>
+</ul>
+</li>
+</ul>
+
+<p><a name="new_module_neural..Network_new"></a></p>
+
+<h4>
+<a id="new-networkparams" class="anchor" href="#new-networkparams" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>new Network(params)</h4>
+
+<p>Creates a new Network</p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>params</td>
+<td><code>Object</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[params.layers]</td>
+<td><code>Array.&lt;number&gt;</code></td>
+<td>An array of layer sizes, indicating the number of Neurons in each Layer (and implicitly, the number of Layers).</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Network+layerCount"></a></p>
+
+<h4>
+<a id="networklayercount--number" class="anchor" href="#networklayercount--number" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.layerCount() ⇒ <code>number</code>
+</h4>
+
+<p>Returns the number of layers in the network.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<a name="module_neural..Network+getLayers"></a></p>
+
+<h4>
+<a id="networkgetlayers--array" class="anchor" href="#networkgetlayers--array" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.getLayers() ⇒ <code>Array</code>
+</h4>
+
+<p>Returns the Layer instances which make up the network (from input to output).</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<strong>Returns</strong>: <code>Array</code> - Array of Layers.<br>
+<a name="module_neural..Network+inputLayer"></a></p>
+
+<h4>
+<a id="networkinputlayer--layer" class="anchor" href="#networkinputlayer--layer" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.inputLayer() ⇒ <code>Layer</code>
+</h4>
+
+<p>Returns the Network's input Layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<a name="module_neural..Network+outputLayer"></a></p>
+
+<h4>
+<a id="networkoutputlayer--layer" class="anchor" href="#networkoutputlayer--layer" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.outputLayer() ⇒ <code>Layer</code>
+</h4>
+
+<p>Returns the Network's output Layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<a name="module_neural..Network+setInputs"></a></p>
+
+<h4>
+<a id="networksetinputsinputs" class="anchor" href="#networksetinputsinputs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.setInputs(inputs)</h4>
+
+<p>Sets the inputs for the Network's input Layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<strong>See</strong>: <a href="Layer#setInputs">Layer#setInputs</a> for more details.  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>inputs</td>
+<td><code>Array.&lt;(number|function()|Neuron)&gt;</code></td>
+<td>An array of inputs, which must be of the same length as the number of Neurons in the input Layer.  Note that whilst these could be Neurons, in an input Layer they would more normally be numbers or functions.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Network+setExpected"></a></p>
+
+<h4>
+<a id="networksetexpectedoutputs" class="anchor" href="#networksetexpectedoutputs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.setExpected(outputs)</h4>
+
+<p>Sets the expected outputs for the Network's output Layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<strong>See</strong>: <a href="Layer#setOutputs">Layer#setOutputs</a> for more details.  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>outputs</td>
+<td><code>Array.&lt;number&gt;</code></td>
+<td>An array of expected values for the output Layer.  This must be the same length as the number of Neurons in the output Layer.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Network+calc"></a></p>
+
+<h4>
+<a id="networkcalc--array" class="anchor" href="#networkcalc--array" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.calc() ⇒ <code>Array</code>
+</h4>
+
+<p>Calculates the output values for the Network based on the current inputs using forward propagation. Note that if Neuron activation values have been calculated since the previous invalidation, these will be used rather than recalculation occurring.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<strong>Returns</strong>: <code>Array</code> - The output layer activation values resulting from the current network inputs.<br>
+<a name="module_neural..Network+getActivations"></a></p>
+
+<h4>
+<a id="networkgetactivations--arrayarraynumber" class="anchor" href="#networkgetactivations--arrayarraynumber" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.getActivations() ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</h4>
+
+<p>Gets all activation values for all Neurons in all Layers in the Network.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<strong>Returns</strong>: <code>Array.&lt;Array.&lt;number&gt;&gt;</code> - Activation values.<br>
+<a name="module_neural..Network+getInputSums"></a></p>
+
+<h4>
+<a id="networkgetinputsums--arrayarraynumber" class="anchor" href="#networkgetinputsums--arrayarraynumber" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.getInputSums() ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</h4>
+
+<p>Gets all input sums for all Neurons in all Layers in the Network.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<strong>Returns</strong>: <code>Array.&lt;Array.&lt;number&gt;&gt;</code> - Input sums.<br>
+<strong>See</strong>: <a href="Neuron#getInputSum">Neuron#getInputSum</a> for more details.<br>
+<a name="module_neural..Network+invalidate"></a></p>
+
+<h4>
+<a id="networkinvalidate" class="anchor" href="#networkinvalidate" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.invalidate()</h4>
+
+<p>Marks the activation cache for every Neuron in the Network as invalid.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<a name="module_neural..Network+randomizeWeights"></a></p>
+
+<h4>
+<a id="networkrandomizeweightse" class="anchor" href="#networkrandomizeweightse" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.randomizeWeights(e)</h4>
+
+<p>Randomizes the input weights for all the Neurons in the Network.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<strong>See</strong>: <a href="Layer#randomizeWeights">Layer#randomizeWeights</a> for more details.  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>e</td>
+<td><code>number</code></td>
+<td>Resulting weights will be in the interval [-e, e].</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Network+forwardPropagate"></a></p>
+
+<h4>
+<a id="networkforwardpropagatetrial--arraynumber" class="anchor" href="#networkforwardpropagatetrial--arraynumber" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.forwardPropagate(trial) ⇒ <code>Array.&lt;number&gt;</code>
+</h4>
+
+<p>Peforms a full forward propagation of the Network using the supplied input values.  Also optionally sets the expected output values for error calculation and training.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<strong>Returns</strong>: <code>Array.&lt;number&gt;</code> - The actual output values resulting from the supplied inputs with the current network weights.  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>trial</td>
+<td><code>Object</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[trial.inputs]</td>
+<td><code>Array.&lt;number&gt;</code></td>
+<td>An array of input values to feed into the Network's input Layer.  This must be the same length as the number of Neurons in the input Layer.</td>
+</tr>
+<tr>
+<td>[trial.outputs=]</td>
+<td><code>Array.&lt;number&gt;</code></td>
+<td>An array of output values to mark as the output Layer's expected activation values.  This must be the same length as the number of Neurons in the output Layer.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..Network+sumSqError"></a></p>
+
+<h4>
+<a id="networksumsqerror--number" class="anchor" href="#networksumsqerror--number" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.sumSqError() ⇒ <code>number</code>
+</h4>
+
+<p>Returns the sum-squared error resulting from comparing the calculated Network outputs with the expected outputs, using the current inputs and weights.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<a name="module_neural..Network+backPropagate"></a></p>
+
+<h4>
+<a id="networkbackpropagate--arrayarraynumber" class="anchor" href="#networkbackpropagate--arrayarraynumber" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.backPropagate() ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</h4>
+
+<p>Applies the back-propagation algorithm to recalculate the deltas for each Neuron in the Network, working from the output Layer to the input Layer.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<strong>Returns</strong>: <code>Array.&lt;Array.&lt;number&gt;&gt;</code> - The deltas for the Neurons in each of the output Layers.<br>
+<a name="module_neural..Network+getIds"></a></p>
+
+<h4>
+<a id="networkgetids--arrayarraynumber" class="anchor" href="#networkgetids--arrayarraynumber" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.getIds() ⇒ <code>Array.&lt;Array.&lt;number&gt;&gt;</code>
+</h4>
+
+<p>Returns the ids for all the Neurons in the Network.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<a name="module_neural..Network+getOutputWeightPartials"></a></p>
+
+<h4>
+<a id="networkgetoutputweightpartials--arrayarrayarraynumber" class="anchor" href="#networkgetoutputweightpartials--arrayarrayarraynumber" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.getOutputWeightPartials() ⇒ <code>Array.&lt;Array.&lt;Array.&lt;number&gt;&gt;&gt;</code>
+</h4>
+
+<p>Gets the output weight partials for each Neuron in the Network</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<strong>Returns</strong>: <code>Array.&lt;Array.&lt;Array.&lt;number&gt;&gt;&gt;</code> - Input weight partials for each Neuron.<br>
+<strong>See</strong>: <a href="Neuron#getInputWeightPartials">Neuron#getInputWeightPartials</a><br>
+<a name="module_neural..Network+getInputWeightPartials"></a></p>
+
+<h4>
+<a id="networkgetinputweightpartials--arrayarrayarraynumber" class="anchor" href="#networkgetinputweightpartials--arrayarrayarraynumber" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.getInputWeightPartials() ⇒ <code>Array.&lt;Array.&lt;Array.&lt;number&gt;&gt;&gt;</code>
+</h4>
+
+<p>Gets the output weight partials for each Neuron in the Network</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<strong>Returns</strong>: <code>Array.&lt;Array.&lt;Array.&lt;number&gt;&gt;&gt;</code> - Output weight partials for each Neuron.<br>
+<strong>See</strong>: <a href="Neuron#getOutputWeightPartials">Neuron#getOutputWeightPartials</a><br>
+<a name="module_neural..Network+getWeights"></a></p>
+
+<h4>
+<a id="networkgetweights--arrayarrayarraynumber" class="anchor" href="#networkgetweights--arrayarrayarraynumber" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.getWeights() ⇒ <code>Array.&lt;Array.&lt;Array.&lt;number&gt;&gt;&gt;</code>
+</h4>
+
+<p>Gets the input weights for each Neuron in the network.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code><br>
+<strong>Returns</strong>: <code>Array.&lt;Array.&lt;Array.&lt;number&gt;&gt;&gt;</code> - Input weights by input, Neuron and Layer.<br>
+<a name="module_neural..Network+setWeights"></a></p>
+
+<h4>
+<a id="networksetweightsthe" class="anchor" href="#networksetweightsthe" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>network.setWeights(The)</h4>
+
+<p>Sets the weights for the entire network in one go.  Useful for rebuilding a trained network.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..Network">Network</a></code>  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The</td>
+<td><code>Array.&lt;Array.&lt;Array.&lt;number&gt;&gt;&gt;</code></td>
+<td>inner-most Arrays refer to the input weights for each Neuron.  These should be arranged in Arrays corresponding to each Neuron in a Layer.  Finally, the weights for each Layer should make up the outer-most Array.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..TrainingData"></a></p>
+
+<h3>
+<a id="neuraltrainingdata" class="anchor" href="#neuraltrainingdata" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neural~TrainingData</h3>
+
+<p><strong>Kind</strong>: inner class of <code><a href="#module_neural">neural</a></code>  </p>
+
+<ul>
+<li>
+<a href="#module_neural..TrainingData">~TrainingData</a>
+
+<ul>
+<li><a href="#new_module_neural..TrainingData_new">new TrainingData(data)</a></li>
+<li>
+<a href="#module_neural..TrainingData+dataGenerator">.dataGenerator()</a> ⇒ <code>generator</code>
+</li>
+<li>
+<a href="#module_neural..TrainingData+dataLength">.dataLength()</a> ⇒ <code>number</code>
+</li>
+</ul>
+</li>
+</ul>
+
+<p><a name="new_module_neural..TrainingData_new"></a></p>
+
+<h4>
+<a id="new-trainingdatadata" class="anchor" href="#new-trainingdatadata" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>new TrainingData(data)</h4>
+
+<p>Creates a new TrainingData object, which can be used to make generators which iterate over the supplied set of examples.  This is very useful for repeated training on a single set of data.</p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>data</td>
+<td><code>Array.&lt;object&gt;</code></td>
+<td>An array of trial objects pertaining to individual training examples.</td>
+</tr>
+<tr>
+<td>[trial.inputs]</td>
+<td><code>Array.&lt;number&gt;</code></td>
+<td>An array of inputs for this trial.  This must be the same length as the number of Neurons in the input layer of the Network that it will be used to train.</td>
+</tr>
+<tr>
+<td>[trial.outputs]</td>
+<td><code>Array.&lt;number&gt;</code></td>
+<td>An array of expected outputs for this trial.  This must be the same length as the number of Neurons in the output layer of the Network that it will be used to train.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..TrainingData+dataGenerator"></a></p>
+
+<h4>
+<a id="trainingdatadatagenerator--generator" class="anchor" href="#trainingdatadatagenerator--generator" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>trainingData.dataGenerator() ⇒ <code>generator</code>
+</h4>
+
+<p>Returns a generator which iterators over the dataset which was used to construct the TrainingData object.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..TrainingData">TrainingData</a></code><br>
+<a name="module_neural..TrainingData+dataLength"></a></p>
+
+<h4>
+<a id="trainingdatadatalength--number" class="anchor" href="#trainingdatadatalength--number" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>trainingData.dataLength() ⇒ <code>number</code>
+</h4>
+
+<p>Gives the number of individual trials in the associated data set.</p>
+
+<p><strong>Kind</strong>: instance method of <code><a href="#module_neural..TrainingData">TrainingData</a></code><br>
+<a name="module_neural..transferFunctions"></a></p>
+
+<h3>
+<a id="neuraltransferfunctions--object" class="anchor" href="#neuraltransferfunctions--object" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neural~transferFunctions : <code>object</code>
+</h3>
+
+<p>The store of transfer functions which can be used in Neurons to convert input sums to activation values.  By default, the following are available:</p>
+
+<p><strong>Kind</strong>: inner namespace of <code><a href="#module_neural">neural</a></code><br>
+<strong>Properties</strong></p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>logSigmoid</td>
+<td><code>function</code></td>
+<td>see <a href="https://en.wikipedia.org/wiki/Logistic_function">https://en.wikipedia.org/wiki/Logistic_function</a>
+</td>
+</tr>
+<tr>
+<td>rectifier</td>
+<td><code>function</code></td>
+<td>see <a href="https://en.wikipedia.org/wiki/Rectifier_(neural_networks)">https://en.wikipedia.org/wiki/Rectifier_(neural_networks)</a>
+</td>
+</tr>
+<tr>
+<td>linear</td>
+<td><code>function</code></td>
+<td>useful for output layers for training data which could take any value.  Note that neural networks cannot rely solely on linear transfer functions otherwise hidden layers will be effectively redundant.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..addTransferFunction"></a></p>
+
+<h3>
+<a id="neuraladdtransferfunctionkey-fn-deriv" class="anchor" href="#neuraladdtransferfunctionkey-fn-deriv" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neural~addTransferFunction(key, fn, deriv)</h3>
+
+<p>Adds a function to the store of <a href="transferFunctions">transferFunctions</a> which can be applied to Neurons to convert the input sum into an activation value.</p>
+
+<p><strong>Kind</strong>: inner method of <code><a href="#module_neural">neural</a></code>  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>key</td>
+<td><code>string</code></td>
+<td>transfer Function name</td>
+</tr>
+<tr>
+<td>fn</td>
+<td><code>one-to-one</code></td>
+<td>The transfer function itself, which should take a number and output a number.  It should be differentiable if it's to be used in network training.</td>
+</tr>
+<tr>
+<td>deriv</td>
+<td><code>one-to-one</code></td>
+<td>The derivative of the transfer function, which is required for back-propagation.  It should take a number and output a number.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="module_neural..one-to-one"></a></p>
+
+<h3>
+<a id="neuralone-to-one--number" class="anchor" href="#neuralone-to-one--number" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>neural~one-to-one ⇒ <code>number</code>
+</h3>
+
+<p><strong>Kind</strong>: inner typedef of <code><a href="#module_neural">neural</a></code><br>
+<strong>Returns</strong>: <code>number</code> - output Output value.  </p>
+
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>input</td>
+<td><code>number</code></td>
+<td>Input value.</td>
+</tr>
+</tbody>
+</table>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/richsilv/neural/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/richsilv/neural/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/richsilv/neural"></a> is maintained by <a href="https://github.com/richsilv">richsilv</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
