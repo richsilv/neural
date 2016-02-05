@@ -1,5 +1,4 @@
 var neural = require('./neural')
-var fs = require('fs')
 // var sizeof = require('./sizeof')
 
 var network = new neural.Network({ layers: [1, 5, 5, 1], alpha: 0.1, lambda: 0, transfer: neural.transferFunctions.rectifier })
@@ -16,8 +15,9 @@ var trainer = neural.trainer(network, trainingData, {
   alpha: 0.1,
   lambda: 0.0001,
   progressiveAlpha: { creep: 1.01, reversal: 0.9, floor: 0.01 },
+  verbose: true
 })
-new Array(10000).fill(0).forEach(() => {
+new Array(100).fill(0).forEach(() => {
   var res = trainer.next().value
   console.log(`Epoch: ${res.epoch}, error: ${res.error}, alpha: ${res.alpha}`)
 })

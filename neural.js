@@ -432,10 +432,10 @@ function* trainer (network, trainingData, opts) {
     for (var trial of dataGen) {
       error += feedForwardAndCalcError(trial)
       network.backPropagate()
-      updateNetworkWeights(network.getInputWeightPartials())
       if (verbose) {
         outputs.push(network.outputLayer().getActivations())
       }
+      updateNetworkWeights(network.getInputWeightPartials())
     }
 
     var weightedError = Math.pow(error / dataLength, 0.5)
@@ -468,7 +468,7 @@ function* trainer (network, trainingData, opts) {
         var neuronWeights = neuron.getWeights()
         var weightMapThisNeuron = weightMap[layerInd][neuronInd]
         neuronWeights = neuronWeights.map((neuronWeight, neuronWeightInd) => {
-          return neuronWeight - (alpha * ((weightMapThisNeuron[neuronWeightInd] / dataLength) + (lambda * neuronWeight)))
+          return neuronWeight - (alpha * (weightMapThisNeuron[neuronWeightInd] + (lambda * neuronWeight / dataLength)))
         })
         neuron.updateWeights(neuronWeights)
       })
