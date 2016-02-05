@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - Neuron</title>
+		<title>JsDoc Reference - Network</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -208,7 +208,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class Neuron
+				Class Network
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -225,7 +225,7 @@ ul.inheritsList
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class Neuron.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class Network.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -238,9 +238,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/Neuron.html#constructor">Neuron</a></b>(params)
+								<b><a href="../symbols/Network.html#constructor">Network</a></b>(params)
 							</div>
-							<div class="description">Creates a new Neuron</div>
+							<div class="description">Creates a new Network</div>
 						</td>
 					</tr>
 				</tbody>
@@ -254,7 +254,7 @@ ul.inheritsList
 			
 				
 				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class Neuron.">
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class Network.">
 					<caption>Method Summary</caption>
 					<thead>
 						<tr>
@@ -267,189 +267,171 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#addInput">addInput</a></b>(The)
+								<div class="fixedFont"><b><a href="../symbols/Network.html#backPropagate">backPropagate</a></b>()
 								</div>
-								<div class="description">Plugs in a new input to the Neuron, which is initialised with a respective weight of 0.</div>
+								<div class="description">Applies the back-propagation algorithm to recalculate the deltas for each Neuron in the Network, working from the output Layer to the input Layer.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#calc">calc</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Network.html#calc">calc</a></b>()
 								</div>
-								<div class="description">Recalculates the activation value, recalculating all the input nodes in turn as required.</div>
+								<div class="description">Calculates the output values for the Network based on the current inputs using forward propagation.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#calcDelta">calcDelta</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Network.html#forwardPropagate">forwardPropagate</a></b>(trial)
 								</div>
-								<div class="description">Recalculates the Neuron's delta.</div>
+								<div class="description">Peforms a full forward propagation of the Network using the supplied input values.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#error">error</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Network.html#getActivations">getActivations</a></b>()
 								</div>
-								<div class="description">The difference between the most recently calculated activation value and the last expected value to be supplied.</div>
+								<div class="description">Gets all activation values for all Neurons in all Layers in the Network.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#getActivation">getActivation</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Network.html#getIds">getIds</a></b>()
 								</div>
-								<div class="description">Gets the Neuron's current activation value.</div>
+								<div class="description">Returns the ids for all the Neurons in the Network.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#getDelta">getDelta</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Network.html#getInputSums">getInputSums</a></b>()
 								</div>
-								<div class="description">Gets the Neuron's current delta.</div>
+								<div class="description">Gets all input sums for all Neurons in all Layers in the Network.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#getId">getId</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Network.html#getInputWeightPartials">getInputWeightPartials</a></b>()
 								</div>
-								<div class="description">Returns the Neuron's id.</div>
+								<div class="description">Gets the output weight partials for each Neuron in the Network</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#getInputCount">getInputCount</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Network.html#getLayers">getLayers</a></b>()
 								</div>
-								<div class="description">Returns the number of inputs feeding this neuron.</div>
+								<div class="description">Returns the Layer instances which make up the network (from input to output).</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#getInputs">getInputs</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Network.html#getOutputWeightPartials">getOutputWeightPartials</a></b>()
 								</div>
-								<div class="description">Returns the Neurons inputs.</div>
+								<div class="description">Gets the output weight partials for each Neuron in the Network</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#getInputSum">getInputSum</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Network.html#getWeights">getWeights</a></b>()
 								</div>
-								<div class="description">Gets the Neuron's current input sum.</div>
+								<div class="description">Gets the input weights for each Neuron in the network.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#getInputWeightPartials">getInputWeightPartials</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Network.html#inputLayer">inputLayer</a></b>()
 								</div>
-								<div class="description">Returns the partial derivatives of the input Neurons errors with respect to this Neuron's input weights.</div>
+								<div class="description">Returns the Network's input Layer.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#getOutputWeightPartials">getOutputWeightPartials</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Network.html#invalidate">invalidate</a></b>()
 								</div>
-								<div class="description">Returns the partial derivative of the Neuron's error with respect to its output weights.</div>
+								<div class="description">Marks the activation cache for every Neuron in the Network as invalid.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#getTransfer">getTransfer</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Network.html#layerCount">layerCount</a></b>()
 								</div>
-								<div class="description">Get the Neuron's transfer function</div>
+								<div class="description">Returns the number of layers in the network.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#getWeights">getWeights</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Network.html#outputLayer">outputLayer</a></b>()
 								</div>
-								<div class="description">Returns the Neuron's weights.</div>
+								<div class="description">Returns the Network's output Layer.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#invalidate">invalidate</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Network.html#randomizeWeights">randomizeWeights</a></b>(e)
 								</div>
-								<div class="description">Marks the Neuron as in need of recalculation by clearing the activation value cache.</div>
+								<div class="description">Randomizes the input weights for all the Neurons in the Network.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#isOutput">isOutput</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/Network.html#setExpected">setExpected</a></b>(outputs)
 								</div>
-								<div class="description">Indicates whether the Neuron is in the output layer of a Network</div>
+								<div class="description">Sets the expected outputs for the Network's output Layer.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#randomizeWeights">randomizeWeights</a></b>(max, min)
+								<div class="fixedFont"><b><a href="../symbols/Network.html#setInputs">setInputs</a></b>(inputs)
 								</div>
-								<div class="description">Randomizes the Neuron's input weights.</div>
+								<div class="description">Sets the inputs for the Network's input Layer.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#setExpected">setExpected</a></b>(Expected)
+								<div class="fixedFont"><b><a href="../symbols/Network.html#setWeights">setWeights</a></b>(The)
 								</div>
-								<div class="description">Sets the expected activation value (from training data) of the Neuron</div>
+								<div class="description">Sets the weights for the entire network in one go.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#setInputs">setInputs</a></b>(newInputs)
+								<div class="fixedFont"><b><a href="../symbols/Network.html#sumSqError">sumSqError</a></b>()
 								</div>
-								<div class="description">Resets the inputs to a neuron.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#setTransfer">setTransfer</a></b>(The)
-								</div>
-								<div class="description">Sets the Neuron's transfer function</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Neuron.html#updateWeights">updateWeights</a></b>(newWeights)
-								</div>
-								<div class="description">Updates the Neuron's weights.</div>
+								<div class="description">Returns the sum-squared error resulting from comparing the calculated Network outputs with the expected outputs, using the current inputs and weights.</div>
 							</td>
 						</tr>
 					
@@ -470,11 +452,11 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>Neuron</b>(params)
+						<b>Network</b>(params)
 				</div>
 				
 				<div class="description">
-					Creates a new Neuron
+					Creates a new Network
 					
 				</div>
 				
@@ -492,22 +474,10 @@ ul.inheritsList
 								<dd></dd>
 						
 							<dt>
-								<span class="light fixedFont">{fn}</span>  <b>params.transfer</b>
-								<i>Optional, Default: 'logSigmoid'</i>
-							</dt>
-								<dd>The neuron's transfer function.</dd>
-						
-							<dt>
-								<span class="light fixedFont">{Array=}</span>  <b>params.inputs</b>
+								<span class="light fixedFont">{Array}</span>  <b>params.layers</b>
 								<i>Optional</i>
 							</dt>
-								<dd>An array of inputs to the neuron, which can be numbers, functions returning a number or Neurons</dd>
-						
-							<dt>
-								<span class="light fixedFont">{Array=}</span>  <b>params.weights</b>
-								<i>Optional</i>
-							</dt>
-								<dd>The input weights with which to initialise the Neuron.  Defaults to zeros.</dd>
+								<dd>An array of layer sizes, indicating the number of Neurons in each Layer (and implicitly, the number of Layers).</dd>
 						
 						</dl>
 					
@@ -530,15 +500,79 @@ ul.inheritsList
 					Method Detail
 				</div>
 				
-					<a name="addInput"> </a>
+					<a name="backPropagate"> </a>
 					<div class="fixedFont">
 					
-					
-					<b>addInput</b>(The)
+					<span class="light">{Array of Arrays}</span>
+					<b>backPropagate</b>()
 					
 					</div>
 					<div class="description">
-						Plugs in a new input to the Neuron, which is initialised with a respective weight of 0.
+						Applies the back-propagation algorithm to recalculate the deltas for each Neuron in the Network, working from the output Layer to the input Layer.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{Array of Arrays}</span> The deltas for the Neurons in each of the output Layers.</dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name="calc"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{Array}</span>
+					<b>calc</b>()
+					
+					</div>
+					<div class="description">
+						Calculates the output values for the Network based on the current inputs using forward propagation. Note that if Neuron activation values have been calculated since the previous invalidation, these will be used rather than recalculation occurring.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{Array}</span> The output layer activation values resulting from the current network inputs.</dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name="forwardPropagate"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{Array}</span>
+					<b>forwardPropagate</b>(trial)
+					
+					</div>
+					<div class="description">
+						Peforms a full forward propagation of the Network using the supplied input values.  Also optionally sets the expected output values for error calculation and training.
 						
 						
 					</div>
@@ -550,10 +584,22 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{number|fn or Neuron}</span> <b>The</b>
+									<span class="light fixedFont">{Object}</span> <b>trial</b>
 									
 								</dt>
-								<dd>new input.</dd>
+								<dd></dd>
+							
+								<dt>
+									<span class="light fixedFont">{Array}</span> <b>trial.inputs</b>
+									<i>Optional</i>
+								</dt>
+								<dd>An array of input values to feed into the Network's input Layer.  This must be the same length as the number of Neurons in the input Layer.</dd>
+							
+								<dt>
+									<span class="light fixedFont">{Array}</span> <b>trial.outputs</b>
+									<i>Optional</i>
+								</dt>
+								<dd>An array of output values to mark as the output Layer's expected activation values.  This must be the same length as the number of Neurons in the output Layer.</dd>
 							
 							</dl>
 						
@@ -561,20 +607,27 @@ ul.inheritsList
 						
 						
 						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{Array}</span> The actual output values resulting from the supplied inputs with the current network weights.</dd>
+							
+							</dl>
+						
 						
 						
 
 					<hr />
 				
-					<a name="calc"> </a>
+					<a name="getActivations"> </a>
 					<div class="fixedFont">
 					
-					<span class="light">{number}</span>
-					<b>calc</b>()
+					<span class="light">{Array of Arrays}</span>
+					<b>getActivations</b>()
 					
 					</div>
 					<div class="description">
-						Recalculates the activation value, recalculating all the input nodes in turn as required.
+						Gets all activation values for all Neurons in all Layers in the Network.
 						
 						
 					</div>
@@ -589,7 +642,7 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{number}</span> The recalculated activation value.</dd>
+								<dd><span class="light fixedFont">{Array of Arrays}</span> Activation values.</dd>
 							
 							</dl>
 						
@@ -598,15 +651,15 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name="calcDelta"> </a>
+					<a name="getIds"> </a>
 					<div class="fixedFont">
 					
-					<span class="light">{number}</span>
-					<b>calcDelta</b>()
+					<span class="light">{Array of Arrays}</span>
+					<b>getIds</b>()
 					
 					</div>
 					<div class="description">
-						Recalculates the Neuron's delta.
+						Returns the ids for all the Neurons in the Network.
 						
 						
 					</div>
@@ -621,7 +674,7 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{number}</span> The new delta.</dd>
+								<dd><span class="light fixedFont">{Array of Arrays}</span> </dd>
 							
 							</dl>
 						
@@ -630,15 +683,15 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name="error"> </a>
+					<a name="getInputSums"> </a>
 					<div class="fixedFont">
 					
-					<span class="light">{number}</span>
-					<b>error</b>()
+					<span class="light">{Array of Arrays}</span>
+					<b>getInputSums</b>()
 					
 					</div>
 					<div class="description">
-						The difference between the most recently calculated activation value and the last expected value to be supplied.
+						Gets all input sums for all Neurons in all Layers in the Network.
 						
 						
 					</div>
@@ -653,203 +706,18 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{number}</span> Difference between activation and expected values.</dd>
+								<dd><span class="light fixedFont">{Array of Arrays}</span> Input sums.</dd>
 							
 							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="getActivation"> </a>
-					<div class="fixedFont">
-					
-					<span class="light">{number}</span>
-					<b>getActivation</b>()
-					
-					</div>
-					<div class="description">
-						Gets the Neuron's current activation value.  Note that this does NOT recalculate the value if input values or weights have changed.
-						
-						
-					</div>
-					
-					
-					
-						
-						
 						
 						
 						
 							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
+							<dt class="heading">See:</dt>
 							
-								<dd><span class="light fixedFont">{number}</span> The most recently-calculated activation value.</dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="getDelta"> </a>
-					<div class="fixedFont">
-					
-					<span class="light">{number}</span>
-					<b>getDelta</b>()
-					
-					</div>
-					<div class="description">
-						Gets the Neuron's current delta.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{number}</span> The Neuron's delta.</dd>
+								<dd>for more details.</dd>
 							
 							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="getId"> </a>
-					<div class="fixedFont">
-					
-					<span class="light">{number}</span>
-					<b>getId</b>()
-					
-					</div>
-					<div class="description">
-						Returns the Neuron's id.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{number}</span> The Neuron's id, which is unique at the module level.</dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="getInputCount"> </a>
-					<div class="fixedFont">
-					
-					<span class="light">{number}</span>
-					<b>getInputCount</b>()
-					
-					</div>
-					<div class="description">
-						Returns the number of inputs feeding this neuron.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{number}</span> count of inputs, which could be numbers, functions returning a number of Neurons.</dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="getInputs"> </a>
-					<div class="fixedFont">
-					
-					<span class="light">{Array}</span>
-					<b>getInputs</b>()
-					
-					</div>
-					<div class="description">
-						Returns the Neurons inputs.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{Array}</span> The Neurons inputs, which could be numbers, functions returning a number or Neurons.</dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="getInputSum"> </a>
-					<div class="fixedFont">
-					
-					<span class="light">{number}</span>
-					<b>getInputSum</b>()
-					
-					</div>
-					<div class="description">
-						Gets the Neuron's current input sum.  This is the weighted sum of inputs, prior to having been passed through the transfer function. Note that this does NOT recalculate the value if input values or weights have changed.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{number}</span> The most recently-calculated input sum.</dd>
-							
-							</dl>
-						
-						
 						
 
 					<hr />
@@ -857,12 +725,12 @@ ul.inheritsList
 					<a name="getInputWeightPartials"> </a>
 					<div class="fixedFont">
 					
-					<span class="light">{Array}</span>
+					<span class="light">{Array of Array of Arrays}</span>
 					<b>getInputWeightPartials</b>()
 					
 					</div>
 					<div class="description">
-						Returns the partial derivatives of the input Neurons errors with respect to this Neuron's input weights.
+						Gets the output weight partials for each Neuron in the Network
 						
 						
 					</div>
@@ -877,7 +745,46 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{Array}</span> The input weight partials.</dd>
+								<dd><span class="light fixedFont">{Array of Array of Arrays}</span> Output weight partials for each Neuron.</dd>
+							
+							</dl>
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">See:</dt>
+							
+								<dd></dd>
+							
+							</dl>
+						
+
+					<hr />
+				
+					<a name="getLayers"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{Array}</span>
+					<b>getLayers</b>()
+					
+					</div>
+					<div class="description">
+						Returns the Layer instances which make up the network (from input to output).
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{Array}</span> Array of Layers.</dd>
 							
 							</dl>
 						
@@ -889,12 +796,12 @@ ul.inheritsList
 					<a name="getOutputWeightPartials"> </a>
 					<div class="fixedFont">
 					
-					<span class="light">{Array}</span>
+					<span class="light">{Array of Array of Arrays}</span>
 					<b>getOutputWeightPartials</b>()
 					
 					</div>
 					<div class="description">
-						Returns the partial derivative of the Neuron's error with respect to its output weights.
+						Gets the output weight partials for each Neuron in the Network
 						
 						
 					</div>
@@ -909,43 +816,18 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{Array}</span> The output weight partials.</dd>
+								<dd><span class="light fixedFont">{Array of Array of Arrays}</span> Input weight partials for each Neuron.</dd>
 							
 							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="getTransfer"> </a>
-					<div class="fixedFont">
-					
-					<span class="light">{fn}</span>
-					<b>getTransfer</b>()
-					
-					</div>
-					<div class="description">
-						Get the Neuron's transfer function
-						
-						
-					</div>
-					
-					
-					
-						
-						
 						
 						
 						
 							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
+							<dt class="heading">See:</dt>
 							
-								<dd><span class="light fixedFont">{fn}</span> The transfer function</dd>
+								<dd></dd>
 							
 							</dl>
-						
-						
 						
 
 					<hr />
@@ -953,12 +835,12 @@ ul.inheritsList
 					<a name="getWeights"> </a>
 					<div class="fixedFont">
 					
-					<span class="light">{Array}</span>
+					<span class="light">{Array of Array of Arrays}</span>
 					<b>getWeights</b>()
 					
 					</div>
 					<div class="description">
-						Returns the Neuron's weights.
+						Gets the input weights for each Neuron in the network.
 						
 						
 					</div>
@@ -973,7 +855,39 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{Array}</span> The neuron's weights (numbers).</dd>
+								<dd><span class="light fixedFont">{Array of Array of Arrays}</span> Input weights by input, Neuron and Layer.</dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name="inputLayer"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{<a href="../symbols/Layer.html">Layer</a>}</span>
+					<b>inputLayer</b>()
+					
+					</div>
+					<div class="description">
+						Returns the Network's input Layer.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{<a href="../symbols/Layer.html">Layer</a>}</span> </dd>
 							
 							</dl>
 						
@@ -990,7 +904,7 @@ ul.inheritsList
 					
 					</div>
 					<div class="description">
-						Marks the Neuron as in need of recalculation by clearing the activation value cache.
+						Marks the activation cache for every Neuron in the Network as invalid.
 						
 						
 					</div>
@@ -1007,15 +921,15 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name="isOutput"> </a>
+					<a name="layerCount"> </a>
 					<div class="fixedFont">
 					
-					<span class="light">{boolean}</span>
-					<b>isOutput</b>()
+					<span class="light">{number}</span>
+					<b>layerCount</b>()
 					
 					</div>
 					<div class="description">
-						Indicates whether the Neuron is in the output layer of a Network
+						Returns the number of layers in the network.
 						
 						
 					</div>
@@ -1030,7 +944,39 @@ ul.inheritsList
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{boolean}</span> </dd>
+								<dd><span class="light fixedFont">{number}</span> </dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name="outputLayer"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{<a href="../symbols/Layer.html">Layer</a>}</span>
+					<b>outputLayer</b>()
+					
+					</div>
+					<div class="description">
+						Returns the Network's output Layer.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{<a href="../symbols/Layer.html">Layer</a>}</span> </dd>
 							
 							</dl>
 						
@@ -1043,11 +989,11 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					
-					<b>randomizeWeights</b>(max, min)
+					<b>randomizeWeights</b>(e)
 					
 					</div>
 					<div class="description">
-						Randomizes the Neuron's input weights.
+						Randomizes the input weights for all the Neurons in the Network.
 						
 						
 					</div>
@@ -1059,16 +1005,10 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{number}</span> <b>max</b>
-									<i>Optional, Default: 0.000001</i>
+									<span class="light fixedFont">{type}</span> <b>e</b>
+									
 								</dt>
-								<dd>Maximum possible weight.</dd>
-							
-								<dt>
-									<span class="light fixedFont">{number}</span> <b>min</b>
-									<i>Optional, Default: 0</i>
-								</dt>
-								<dd>Minimum possible weights.</dd>
+								<dd>Resulting weights will be in the interval [-e, e].</dd>
 							
 							</dl>
 						
@@ -1077,6 +1017,13 @@ ul.inheritsList
 						
 						
 						
+						
+							<dl class="detailList">
+							<dt class="heading">See:</dt>
+							
+								<dd>for more details.</dd>
+							
+							</dl>
 						
 
 					<hr />
@@ -1085,11 +1032,11 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					
-					<b>setExpected</b>(Expected)
+					<b>setExpected</b>(outputs)
 					
 					</div>
 					<div class="description">
-						Sets the expected activation value (from training data) of the Neuron
+						Sets the expected outputs for the Network's output Layer.
 						
 						
 					</div>
@@ -1101,10 +1048,10 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{number}</span> <b>Expected</b>
+									<span class="light fixedFont">{Array}</span> <b>outputs</b>
 									
 								</dt>
-								<dd>output value</dd>
+								<dd>An array of expected values for the output Layer.  This must be the same length as the number of Neurons in the output Layer.</dd>
 							
 							</dl>
 						
@@ -1113,6 +1060,13 @@ ul.inheritsList
 						
 						
 						
+						
+							<dl class="detailList">
+							<dt class="heading">See:</dt>
+							
+								<dd>for more details.</dd>
+							
+							</dl>
 						
 
 					<hr />
@@ -1121,11 +1075,11 @@ ul.inheritsList
 					<div class="fixedFont">
 					
 					
-					<b>setInputs</b>(newInputs)
+					<b>setInputs</b>(inputs)
 					
 					</div>
 					<div class="description">
-						Resets the inputs to a neuron.  Any existing inputs are removed.
+						Sets the inputs for the Network's input Layer.
 						
 						
 					</div>
@@ -1137,10 +1091,53 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{Array}</span> <b>newInputs</b>
+									<span class="light fixedFont">{Array}</span> <b>inputs</b>
 									
 								</dt>
-								<dd>Array of inputs to the Neuron, which can be numbers, functions returning a number or Neurons.</dd>
+								<dd>An array of inputs, which must be of the same length as the number of Neurons in the input Layer.  Note that whilst these could be Neurons, in an input Layer they would more normally be numbers or functions.</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">See:</dt>
+							
+								<dd>for more details.</dd>
+							
+							</dl>
+						
+
+					<hr />
+				
+					<a name="setWeights"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>setWeights</b>(The)
+					
+					</div>
+					<div class="description">
+						Sets the weights for the entire network in one go.  Useful for rebuilding a trained network.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{Array of Array of Arrays}</span> <b>The</b>
+									
+								</dt>
+								<dd>inner-most Arrays refer to the input weights for each Neuron.  These should be arranged in Arrays corresponding to each Neuron in a Layer.  Finally, the weights for each Layer should make up the outer-most Array.</dd>
 							
 							</dl>
 						
@@ -1153,72 +1150,32 @@ ul.inheritsList
 
 					<hr />
 				
-					<a name="setTransfer"> </a>
+					<a name="sumSqError"> </a>
 					<div class="fixedFont">
 					
-					
-					<b>setTransfer</b>(The)
+					<span class="light">{number}</span>
+					<b>sumSqError</b>()
 					
 					</div>
 					<div class="description">
-						Sets the Neuron's transfer function
+						Returns the sum-squared error resulting from comparing the calculated Network outputs with the expected outputs, using the current inputs and weights.
 						
 						
 					</div>
 					
 					
 					
+						
+						
+						
+						
 						
 							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
+							<dt class="heading">Returns:</dt>
 							
-								<dt>
-									<span class="light fixedFont">{fn}</span> <b>The</b>
-									
-								</dt>
-								<dd>replacement transfer function (see section on transfer functions for details of acceptable formats).</dd>
+								<dd><span class="light fixedFont">{number}</span> </dd>
 							
 							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="updateWeights"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>updateWeights</b>(newWeights)
-					
-					</div>
-					<div class="description">
-						Updates the Neuron's weights.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{Array}</span> <b>newWeights</b>
-									
-								</dt>
-								<dd>An array of numbers, which must be of the same length as the Neuron's array of inputs.</dd>
-							
-							</dl>
-						
-						
-						
-						
 						
 						
 						

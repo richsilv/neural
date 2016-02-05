@@ -1,14 +1,27 @@
 var matrix = require('./matrix')
 var neuronId = 0
+
+/**
+ * A neural network toolkit for Node.js and the browser.
+ * @module neural
+ */
+
+/**
+ * The store of transfer functions which can be used in Neurons to convert input sums to activation values.  By default, the following are available:
+ * @namespace
+ * @prop {function} logSigmoid see {@link https://en.wikipedia.org/wiki/Logistic_function}
+ * @prop {function} rectifier see {@link https://en.wikipedia.org/wiki/Rectifier_(neural_networks)}
+ * @prop {function} linear useful for output layers for training data which could take any value.  Note that neural networks cannot rely solely on linear transfer functions otherwise hidden layers will be effectively redundant.
+ */
 var transferFunctions = {}
 
 /**
  * Creates a new Neuron
  * @constructor
  * @param {Object} params
- * @param {fn} [params.transfer='logSigmoid'] The neuron's transfer function.
- * @param {Array=} [params.inputs] An array of inputs to the neuron, which can be numbers, functions returning a number or Neurons
- * @param {Array=} [params.weights] The input weights with which to initialise the Neuron.  Defaults to zeros.
+ * @param {function} [params.transfer='logSigmoid'] The neuron's transfer function.
+ * @param {Array<number>=} [params.inputs] An array of inputs to the neuron, which can be numbers, functions returning a number or Neurons
+ * @param {Array<number>=} [params.weights] The input weights with which to initialise the Neuron.  Defaults to zeros.
  */
 function Neuron (params) {
   if (!(this instanceof Neuron)) return new Neuron(params)
@@ -24,7 +37,7 @@ function Neuron (params) {
 
   /**
    * Resets the inputs to a neuron.  Any existing inputs are removed.
-   * @param  {Array} newInputs Array of inputs to the Neuron, which can be numbers, functions returning a number or Neurons.
+   * @param  {Array<number|function|Neuron>} newInputs Array of inputs to the Neuron, which can be numbers, functions returning a number or Neurons.
    */
   this.setInputs = function (newInputs) {
     if (newInputs.length !== inputs.length) weights = matrix.zeros(newInputs.length)
@@ -50,7 +63,7 @@ function Neuron (params) {
 
   /**
    * Updates the Neuron's weights.
-   * @param  {Array} newWeights An array of numbers, which must be of the same length as the Neuron's array of inputs.
+   * @param  {number[]} newWeights An array of numbers, which must be of the same length as the Neuron's array of inputs.
    */
   this.updateWeights = function (newWeights) {
     this.invalidate()
@@ -83,7 +96,7 @@ function Neuron (params) {
 
   /**
    * Sets the Neuron's transfer function
-   * @param  {fn} The replacement transfer function (see section on transfer functions for details of acceptable formats).
+   * @param  {function} The replacement transfer function (see section on transfer functions for details of acceptable formats).
    */
   this.setTransfer = function (fn) {
     transfer = fn
@@ -136,7 +149,7 @@ function Neuron (params) {
 
   /**
    * Plugs in a new input to the Neuron, which is initialised with a respective weight of 0.
-   * @param  {number, fn or Neuron} The new input.
+   * @param  {(number|function|Neuron)} The new input.
    */
   this.addInput = function (input) {
     inputs.push(input)
@@ -228,7 +241,7 @@ function Neuron (params) {
  * Creates a new Network Layer
  * @constructor
  * @param {Object} params
- * @param {number or Array} [params.neurons]  The Neurons in the layer. If an integer is passed, that number of Neurons will be constructed for this Layer.
+ * @param {(number|Neuron[])} [params.neurons]  The Neurons in the layer. If an integer is passed, that number of Neurons will be constructed for this Layer.
  */
 function Layer (params) {
   var neurons = []
@@ -290,7 +303,7 @@ function Layer (params) {
 
   /**
    * Sets the inputs for all the Neurons in this Layer.
-   * @param  {Array} inputs       An array of inputs, which could be numbers, functions returning a number or Neurons.
+   * @param  {Array<number|function|Neuron>} inputs       An array of inputs, which could be numbers, functions returning a number or Neurons.
    * @param  {boolean} isInputLayer Indicates whether this is intended to be the input layer in a Network.  If set to true, rather than each of the supplied inputs being wired into each of the Neurons in this Layer, they will be mapped one-to-one, with no bias (i.e. passed straight through to the next layer).
    */
   this.setInputs = function (inputs, isInputLayer) {
@@ -317,7 +330,7 @@ function Layer (params) {
 
   /**
    * Sets the expected values for the activation values of the Neurons in this Layer.
-   * @param  {Array} An array of output values (numbers), equal in length to the number of Neurons in this Layer.
+   * @param  {number[]} An array of output values (numbers), equal in length to the number of Neurons in this Layer.
    */
   this.setExpected = function (outputs) {
     if (!(outputs instanceof Array)) throw new Error('Outputs must be an array')
@@ -327,7 +340,7 @@ function Layer (params) {
 
   /**
    * Sets the transfer function for every Neuron in this Layer
-   * @param  {fn} fn The replacement transfer function (see section on transfer functions for details of acceptable formats).
+   * @param  {function} fn The replacement transfer function (see section on transfer functions for details of acceptable formats).
    */
   this.setTransfer = function (fn) {
     return neurons.forEach(neuron => neuron.setTransfer(fn))
@@ -358,7 +371,7 @@ function Layer (params) {
 
   /**
    * Gets the weights for each Neuron in this Layer.
-   * @return {Array of Arrays}  The weights for each Neuron in this Layer.
+   * @return {Array<Array<number>>}  The weights for each Neuron in this Layer.
    */
   this.getWeights = function () {
     return neurons.map(neuron => neuron.getWeights())
@@ -366,7 +379,7 @@ function Layer (params) {
 
   /**
    * Update the input weights for the Neurons in this Layer.
-   * @param  {Array of Arrays} weights The new weights for each Neuron in this Layer.
+   * @param  {Array<Array<number>>} weights The new weights for each Neuron in this Layer.
    */
   this.setWeights = function (weights) {
     neurons.forEach((neuron, neuronInd) => neuron.updateWeights(weights[neuronInd]))
@@ -399,7 +412,7 @@ function Layer (params) {
   /**
    * Returns the output weight partials for the Neurons in this Layer.
    * @see {@link Neuron#getOutputWeightPartials}
-   * @return {Array of Arrays}  Array of output weight partials for each Neuron.
+   * @return {Array<Array<number>>}  Array of output weight partials for each Neuron.
    */
   this.getOutputWeightPartials = function () {
     return neurons.map(neuron => neuron.getOutputWeightPartials())
@@ -408,7 +421,7 @@ function Layer (params) {
   /**
    * Returns the input weight partials for the Neurons in this Layer.
    * @see {@link Neuron#getInputWeightPartials}
-   * @return {Array of Arrays}  Array of input weight partials for each Neuron.
+   * @return {Array<Array<number>>}  Array of input weight partials for each Neuron.
    */
   this.getInputWeightPartials = function () {
     return neurons.map(neuron => neuron.getInputWeightPartials())
@@ -430,7 +443,7 @@ function Layer (params) {
  * Creates a new Network
  * @constructor
  * @param {Object} params
- * @param {Array} [params.layers] An array of layer sizes, indicating the number of Neurons in each Layer (and implicitly, the number of Layers).
+ * @param {number[]} [params.layers] An array of layer sizes, indicating the number of Neurons in each Layer (and implicitly, the number of Layers).
  */
 function Network (params) {
   if (!(this instanceof Network)) return new Network(params)
@@ -489,7 +502,7 @@ function Network (params) {
   /**
    * Sets the inputs for the Network's input Layer.
    * @see {@link Layer#setInputs} for more details.
-   * @param  {Array} inputs An array of inputs, which must be of the same length as the number of Neurons in the input Layer.  Note that whilst these could be Neurons, in an input Layer they would more normally be numbers or functions.
+   * @param  {Array<number|function|Neuron>} inputs An array of inputs, which must be of the same length as the number of Neurons in the input Layer.  Note that whilst these could be Neurons, in an input Layer they would more normally be numbers or functions.
    */
   this.setInputs = function (inputs) {
     this.inputLayer().setInputs(inputs, true)
@@ -498,7 +511,7 @@ function Network (params) {
   /**
    * Sets the expected outputs for the Network's output Layer.
    * @see {@link Layer#setOutputs} for more details.
-   * @param  {Array} outputs An array of expected values for the output Layer.  This must be the same length as the number of Neurons in the output Layer.
+   * @param  {number[]} outputs An array of expected values for the output Layer.  This must be the same length as the number of Neurons in the output Layer.
    */
   this.setExpected = function (outputs) {
     this.outputLayer().setExpected(outputs)
@@ -514,7 +527,7 @@ function Network (params) {
 
   /**
    * Gets all activation values for all Neurons in all Layers in the Network.
-   * @return {Array of Arrays} Activation values.
+   * @return {Array<Array<number>>} Activation values.
    */
   this.getActivations = function () {
     return layers.map(layer => layer.getActivations())
@@ -523,7 +536,7 @@ function Network (params) {
   /**
    * Gets all input sums for all Neurons in all Layers in the Network.
    * @see {@link Neuron#getInputSum} for more details.
-   * @return {Array of Arrays} Input sums.
+   * @return {Array<Array<number>>} Input sums.
    */
   this.getInputSums = function () {
     return layers.map(layer => layer.getInputSums())
@@ -539,7 +552,7 @@ function Network (params) {
   /**
    * Randomizes the input weights for all the Neurons in the Network.
    * @see {@link Layer#randomizeWeights} for more details.
-   * @param  {type} e Resulting weights will be in the interval [-e, e].
+   * @param  {number} e Resulting weights will be in the interval [-e, e].
    */
   this.randomizeWeights = function (e) {
     layers.forEach(layer => layer.randomizeWeights(e))
@@ -548,9 +561,9 @@ function Network (params) {
   /**
    * Peforms a full forward propagation of the Network using the supplied input values.  Also optionally sets the expected output values for error calculation and training.
    * @param  {Object} trial
-   * @param  {Array} [trial.inputs] An array of input values to feed into the Network's input Layer.  This must be the same length as the number of Neurons in the input Layer.
-   * @param  {Array} [trial.outputs=] An array of output values to mark as the output Layer's expected activation values.  This must be the same length as the number of Neurons in the output Layer.
-   * @return {Array}      The actual output values resulting from the supplied inputs with the current network weights.
+   * @param  {number[]} [trial.inputs] An array of input values to feed into the Network's input Layer.  This must be the same length as the number of Neurons in the input Layer.
+   * @param  {number[]} [trial.outputs=] An array of output values to mark as the output Layer's expected activation values.  This must be the same length as the number of Neurons in the output Layer.
+   * @return {number[]}      The actual output values resulting from the supplied inputs with the current network weights.
    */
   this.forwardPropagate = function (trial) {
     this.invalidate()
@@ -571,7 +584,7 @@ function Network (params) {
 
   /**
    * Applies the back-propagation algorithm to recalculate the deltas for each Neuron in the Network, working from the output Layer to the input Layer.
-   * @return {Array of Arrays}  The deltas for the Neurons in each of the output Layers.
+   * @return {Array<Array<number>>}  The deltas for the Neurons in each of the output Layers.
    */
   this.backPropagate = function () {
     this.invalidate()
@@ -585,7 +598,7 @@ function Network (params) {
 
   /**
    * Returns the ids for all the Neurons in the Network.
-   * @return {Array of Arrays}
+   * @return {Array<Array<number>>}
    */
   this.getIds = function () {
     return layers.map(layer => layer.getIds())
@@ -594,8 +607,8 @@ function Network (params) {
   /**
    * Gets the output weight partials for each Neuron in the Network
    * @see {@link Neuron#getInputWeightPartials}
-   * @return {Array of Array of Arrays}  Input weight partials for each Neuron.
-   */   
+   * @return {Array<Array<Array<number>>>}  Input weight partials for each Neuron.
+   */
   this.getOutputWeightPartials = function () {
     return layers.map(layer => layer.getOutputWeightPartials())
   }
@@ -603,7 +616,7 @@ function Network (params) {
   /**
    * Gets the output weight partials for each Neuron in the Network
    * @see {@link Neuron#getOutputWeightPartials}
-   * @return {Array of Array of Arrays}  Output weight partials for each Neuron.
+   * @return {Array<Array<Array<number>>>}  Output weight partials for each Neuron.
    */
   this.getInputWeightPartials = function () {
     return layers.map(layer => layer.getInputWeightPartials())
@@ -611,7 +624,7 @@ function Network (params) {
 
   /**
    * Gets the input weights for each Neuron in the network.
-   * @return {Array of Array of Arrays}  Input weights by input, Neuron and Layer.
+   * @return {Array<Array<Array<number>>>}  Input weights by input, Neuron and Layer.
    */
   this.getWeights = function () {
     return layers.map(layer => layer.getWeights())
@@ -619,7 +632,7 @@ function Network (params) {
 
   /**
    * Sets the weights for the entire network in one go.  Useful for rebuilding a trained network.
-   * @param  {Array of Array of Arrays} The inner-most Arrays refer to the input weights for each Neuron.  These should be arranged in Arrays corresponding to each Neuron in a Layer.  Finally, the weights for each Layer should make up the outer-most Array.
+   * @param  {Array<Array<Array<number>>>} The inner-most Arrays refer to the input weights for each Neuron.  These should be arranged in Arrays corresponding to each Neuron in a Layer.  Finally, the weights for each Layer should make up the outer-most Array.
    */
   this.setWeights = function (weights) {
     layers.map((layer, layerInd) => layer.setWeights(weights[layerInd].slice(0)))
@@ -628,6 +641,13 @@ function Network (params) {
   return this
 }
 
+/**
+ * Creates a new TrainingData object, which can be used to make generators which iterate over the supplied set of examples.  This is very useful for repeated training on a single set of data.
+ * @constructor
+ * @param {object[]} data An array of trial objects pertaining to individual training examples.
+ * @param {number[]} [trial.inputs] An array of inputs for this trial.  This must be the same length as the number of Neurons in the input layer of the Network that it will be used to train.
+ * @param {number[]} [trial.outputs] An array of expected outputs for this trial.  This must be the same length as the number of Neurons in the output layer of the Network that it will be used to train.
+ */
 function TrainingData (data) {
   if (!(this instanceof TrainingData)) return new TrainingData(data)
   var dataLength = data.length
@@ -637,10 +657,18 @@ function TrainingData (data) {
     return dataLength
   }
 
+  /**
+   * Returns a generator which iterators over the dataset which was used to construct the TrainingData object.
+   * @return {generator}
+   */
   this.dataGenerator = function () {
     return dataGen()
   }
 
+  /**
+   * Gives the number of individual trials in the associated data set.
+   * @return {number}
+   */
   this.dataLength = function () {
     return dataLength
   }
@@ -648,18 +676,35 @@ function TrainingData (data) {
   return this
 }
 
-function* trainer (network, trainingData, opts) {
-  opts = opts || {}
-  var alpha = opts.alpha || network.alpha || 0.5
+
+/**
+* @memberof neural
+ * Returns a generator which trains the given Network with one epoch of the supplied training data (i.e. one update for each example in the training set) when `next` is invoked.
+ * Calling `next` will return an object with the current epoch, average sum-squared error of the last epoch, the best achieved error, the associated best network weights and the current learning rate (alpha).
+ * @param  {Network} network      The neural network to train.
+ * @param  {TrainingData} trainingData A TrainingData object to use to train the network.
+ * @param  {Object} params
+ * @param  {number} [params.alpha=0.5] The initial learning rate.
+ * @param  {number} [params.lambda=0.01] The damping factor (which pulls weights back towards 0 to avoid them escalating).
+ * @param  {number} [params.progressiveAlpha=] Allows the learning rate to increase gradually when calculated errors are declining, and pull back if they increase.
+ * @param  {number} [params.progressiveAlpha.creep=1.01] The proportional increase in alpha (learning rate) after every epoch which results in an improved net error.
+ * @param  {number} [params.progressiveAlpha.reversal=0.75] The pull-back in alpha (learning rate) after any epoch which results in an increased net error.
+ * @param  {number} [params.progressiveAlpha.floor=0] The lowest level the learning rate will be permitted to reach, even if errors continue to increase. Can help to avoid problems with local minima.
+ * @param  {boolean} [params.verbose=false] Also yield the calculated (actual) outputs for the last training epoch, for visualisation of training progress.
+ * @return {generator}
+ */
+function* trainer (network, trainingData, params) {
+  params = params || {}
+  var alpha = params.alpha || network.alpha || 0.5
   var alphaUpdater = alphaUpdaterGen(alpha)
-  var lambda = opts.lamdba || network.lambda || 0.01
+  var lambda = params.lamdba || network.lambda || 0.01
   var dataLength = trainingData.dataLength()
-  var progressiveAlpha = opts.progressiveAlpha ? {
-    creep: opts.progressiveAlpha.creep,
-    reversal: opts.progressiveAlpha.reversal,
-    floor: opts.progressiveAlpha.floor
+  var progressiveAlpha = params.progressiveAlpha ? {
+    creep: params.progressiveAlpha.creep || 1.01,
+    reversal: params.progressiveAlpha.reversal || 0.75,
+    floor: params.progressiveAlpha.floor || 0
   } : false
-  var verbose = opts.verbose
+  var verbose = params.verbose
   var minError
   var bestWeights
   var epoch = 0
@@ -796,6 +841,18 @@ function randNum (max, min) {
   return (Math.random() * (max - min)) + min
 }
 
+/**
+ * @callback one-to-one
+ * @param {number} input Input value.
+ * @returns {number} output Output value.
+ */
+
+/**
+ * Adds a function to the store of {@link transferFunctions} which can be applied to Neurons to convert the input sum into an activation value.
+ * @param  {string} key   transfer Function name
+ * @param  {one-to-one} fn    The transfer function itself, which should take a number and output a number.  It should be differentiable if it's to be used in network training.
+ * @param  {one-to-one} deriv The derivative of the transfer function, which is required for back-propagation.  It should take a number and output a number.
+ */
 function addTransferFunction (key, fn, deriv) {
   transferFunctions[key] = fn
   transferFunctions[key].derivative = deriv
@@ -851,5 +908,6 @@ module.exports = {
   trainer,
   batch,
   race,
-  transferFunctions
+  transferFunctions,
+  addTransferFunction
 }
