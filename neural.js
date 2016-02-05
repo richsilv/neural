@@ -426,22 +426,20 @@ function* trainer (network, trainingData, opts) {
   function runEpoch () {
     epoch += 1
     var dataGen = trainingData.dataGenerator()
-    var weightMap = makeWeightMap()
     var error = 0
     var outputs = []
 
     for (var trial of dataGen) {
       error += feedForwardAndCalcError(trial)
       network.backPropagate()
-      weightMap = updateWeightMap(weightMap)
+      updateNetworkWeights(network.getInputWeightPartials())
       if (verbose) {
         outputs.push(network.outputLayer().getActivations())
       }
     }
 
     var weightedError = Math.pow(error / dataLength, 0.5)
-    updateNetworkWeights(weightMap)
-    if (progressiveAlpha) alpha = alphaUpdater.next(weightedError).value
+    // if (progressiveAlpha) alpha = alphaUpdater.next(weightedError).value
     if (!minError || weightedError < minError) {
       minError = weightedError
       bestWeights = network.getWeights()
@@ -457,23 +455,9 @@ function* trainer (network, trainingData, opts) {
     return result
   }
 
-  function makeWeightMap () {
-    var weights = network.getWeights()
-    return weights.map(layer => {
-      return layer.map(neuron => {
-        return matrix.zeros(neuron.length)
-      })
-    })
-  }
-
   function feedForwardAndCalcError (trial) {
     network.forwardPropagate(trial)
     return network.sumSqError()
-  }
-
-  function updateWeightMap (weightMap) {
-    var inputWeightPartials = network.getInputWeightPartials()
-    return networkSum(weightMap, inputWeightPartials, [0])
   }
 
   function updateNetworkWeights (weightMap) {
