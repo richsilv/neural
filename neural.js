@@ -65,7 +65,7 @@ function Neuron (params) {
    * Updates the Neuron's weights.
    * @param  {number[]} newWeights An array of numbers, which must be of the same length as the Neuron's array of inputs.
    */
-  this.updateWeights = function (newWeights) {
+  this.setWeights = function (newWeights) {
     this.invalidate()
     weights = newWeights.slice(0)
   }
@@ -313,7 +313,7 @@ function Layer (params) {
       isInput = true
       neurons.forEach((neuron, ind) => {
         neuron.setInputs([inputs[ind]])
-        neuron.updateWeights([1])
+        neuron.setWeights([1])
       })
       this.getNeurons().forEach(neuron => neuron.setTransfer(transferFunctions.linear))
     } else {
@@ -382,7 +382,7 @@ function Layer (params) {
    * @param  {Array<Array<number>>} weights The new weights for each Neuron in this Layer.
    */
   this.setWeights = function (weights) {
-    neurons.forEach((neuron, neuronInd) => neuron.updateWeights(weights[neuronInd]))
+    neurons.forEach((neuron, neuronInd) => neuron.setWeights(weights[neuronInd]))
   }
 
   /**
@@ -762,7 +762,7 @@ function* trainer (network, trainingData, params) {
         neuronWeights = neuronWeights.map((neuronWeight, neuronWeightInd) => {
           return neuronWeight - (alpha * (weightMapThisNeuron[neuronWeightInd] + (lambda * neuronWeight / dataLength)))
         })
-        neuron.updateWeights(neuronWeights)
+        neuron.setWeights(neuronWeights)
       })
     })
   }
