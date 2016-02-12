@@ -9,7 +9,7 @@ A neural network toolkit for Node.js and the browser.
         * [.setInputs(newInputs)](#module_neural..Neuron+setInputs)
         * [.getInputs()](#module_neural..Neuron+getInputs) ⇒ <code>Array</code>
         * [.getInputCount()](#module_neural..Neuron+getInputCount) ⇒ <code>number</code>
-        * [.updateWeights(newWeights)](#module_neural..Neuron+updateWeights)
+        * [.setWeights(newWeights)](#module_neural..Neuron+setWeights)
         * [.getWeights()](#module_neural..Neuron+getWeights) ⇒ <code>Array</code>
         * [.getId()](#module_neural..Neuron+getId) ⇒ <code>number</code>
         * [.getTransfer()](#module_neural..Neuron+getTransfer) ⇒ <code>fn</code>
@@ -85,7 +85,7 @@ A neural network toolkit for Node.js and the browser.
     * [.setInputs(newInputs)](#module_neural..Neuron+setInputs)
     * [.getInputs()](#module_neural..Neuron+getInputs) ⇒ <code>Array</code>
     * [.getInputCount()](#module_neural..Neuron+getInputCount) ⇒ <code>number</code>
-    * [.updateWeights(newWeights)](#module_neural..Neuron+updateWeights)
+    * [.setWeights(newWeights)](#module_neural..Neuron+setWeights)
     * [.getWeights()](#module_neural..Neuron+getWeights) ⇒ <code>Array</code>
     * [.getId()](#module_neural..Neuron+getId) ⇒ <code>number</code>
     * [.getTransfer()](#module_neural..Neuron+getTransfer) ⇒ <code>fn</code>
@@ -138,8 +138,8 @@ Returns the number of inputs feeding this neuron.
 
 **Kind**: instance method of <code>[Neuron](#module_neural..Neuron)</code>  
 **Returns**: <code>number</code> - count of inputs, which could be numbers, functions returning a number of Neurons.  
-<a name="module_neural..Neuron+updateWeights"></a>
-#### neuron.updateWeights(newWeights)
+<a name="module_neural..Neuron+setWeights"></a>
+#### neuron.setWeights(newWeights)
 Updates the Neuron's weights.
 
 **Kind**: instance method of <code>[Neuron](#module_neural..Neuron)</code>  
@@ -675,3 +675,4 @@ Adds a function to the store of [transferFunctions](transferFunctions) which can
 | Param | Type | Description |
 | --- | --- | --- |
 | input | <code>number</code> | Input value. |
+
