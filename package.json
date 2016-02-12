@@ -4,11 +4,13 @@
   "description": "Neural network package",
   "main": "neural.js",
   "scripts": {
-    "test": "test",
+    "test": "node tests/tests.js",
     "browserify": "browserify neural-global.js -o neural-browser.js"
   },
   "author": "Richard Silverton",
   "license": "ISC",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
+    "tape": "^4.4.0"
   }
 }
