@@ -1,8 +1,8 @@
 var neural = require('./neural')
 
-var network = new neural.Network({ layers: [2, 4, 4, 2], alpha: 0.1, lambda: 0, transfer: neural.transferFunctions.rectifier })
+var network = new neural.Network({ layers: [1, 3, 5, 3, 1], alpha: 0.1, lambda: 0, transfer: neural.transferFunctions.rectifier })
 network.outputLayer().setTransfer(neural.transferFunctions.logSigmoid)
-var rawTrainingData = makeTrainingData2(10)
+var rawTrainingData = makeTrainingDataSin(100)
 
 var trainingData = new neural.TrainingData(rawTrainingData)
 var trainer = neural.trainer(network, trainingData, {
