@@ -644,16 +644,21 @@ function Network (params) {
 /**
  * Creates a new TrainingData object, which can be used to make generators which iterate over the supplied set of examples.  This is very useful for repeated training on a single set of data.
  * @constructor
- * @param {object[]} data An array of trial objects pertaining to individual training examples.
- * @param {number[]} [trial.inputs] An array of inputs for this trial.  This must be the same length as the number of Neurons in the input layer of the Network that it will be used to train.
- * @param {number[]} [trial.outputs] An array of expected outputs for this trial.  This must be the same length as the number of Neurons in the output layer of the Network that it will be used to train.
+ * @param {Object[]} data An array of trial objects pertaining to individual training examples.
+ * @param {number[]} data[].inputs An array of inputs for this trial.  This must be the same length as the number of Neurons in the input layer of the Network that it will be used to train.
+ * @param {number[]} data[].outputs An array of expected outputs for this trial.  This must be the same length as the number of Neurons in the output layer of the Network that it will be used to train.
+ * @param {Object} [opts] Training options.
+ * @param {boolean} [opts.randomOrder] if true, randomize the order in which the trials are returned within every generator.
  */
-function TrainingData (data) {
+function TrainingData (data, opts) {
   if (!(this instanceof TrainingData)) return new TrainingData(data)
+  opts = opts || {}
   var dataLength = data.length
 
   function *dataGen () {
-    yield* data
+    var thisData = data.slice(0)
+    if (opts.randomOrder) shuffle(thisData)
+    yield* thisData
     return dataLength
   }
 
@@ -686,6 +691,7 @@ function TrainingData (data) {
  * @param  {Object} params
  * @param  {number} [params.alpha=0.5] The initial learning rate.
  * @param  {number} [params.lambda=0.01] The damping factor (which pulls weights back towards 0 to avoid them escalating).
+ * @param  {number} [batchSize=1] The number of examples used for back-propagation between weight updates.
  * @param  {number} [params.progressiveAlpha=] Allows the learning rate to increase gradually when calculated errors are declining, and pull back if they increase.
  * @param  {number} [params.progressiveAlpha.creep=1.01] The proportional increase in alpha (learning rate) after every epoch which results in an improved net error.
  * @param  {number} [params.progressiveAlpha.reversal=0.75] The pull-back in alpha (learning rate) after any epoch which results in an increased net error.
@@ -698,6 +704,7 @@ function* trainer (network, trainingData, params) {
   var alpha = params.alpha || network.alpha || 0.5
   var alphaUpdater = alphaUpdaterGen(alpha)
   var lambda = params.lamdba || network.lambda || 0.01
+  var batchSize = Math.floor(params.batchSize) || 1;
   var dataLength = trainingData.dataLength()
   var progressiveAlpha = params.progressiveAlpha ? {
     creep: params.progressiveAlpha.creep || 1.01,
@@ -720,14 +727,19 @@ function* trainer (network, trainingData, params) {
     var dataGen = trainingData.dataGenerator()
     var error = 0
     var outputs = []
+    var counter = 0
 
     for (var trial of dataGen) {
+      counter += 1
       error += feedForwardAndCalcError(trial)
       network.backPropagate()
       if (verbose) {
         outputs.push(network.outputLayer().getActivations())
       }
-      updateNetworkWeights(network.getInputWeightPartials())
+      if (counter === batchSize) {
+        updateNetworkWeights(network.getInputWeightPartials(), batchSize)
+        counter = 0
+      }
     }
 
     var weightedError = Math.pow(error / dataLength, 0.5)
@@ -752,7 +764,8 @@ function* trainer (network, trainingData, params) {
     return network.sumSqError()
   }
 
-  function updateNetworkWeights (weightMap) {
+  function updateNetworkWeights (weightMap, batchSize) {
+    batchSize = batchSize || 1
     var layers = network.getLayers()
     layers.forEach((layer, layerInd) => {
       if (layerInd === 0) return
@@ -760,7 +773,7 @@ function* trainer (network, trainingData, params) {
         var neuronWeights = neuron.getWeights()
         var weightMapThisNeuron = weightMap[layerInd][neuronInd]
         neuronWeights = neuronWeights.map((neuronWeight, neuronWeightInd) => {
-          return neuronWeight - (alpha * (weightMapThisNeuron[neuronWeightInd] + (lambda * neuronWeight / dataLength)))
+          return neuronWeight - (alpha * ((weightMapThisNeuron[neuronWeightInd] / batchSize) + (lambda * neuronWeight * batchSize / dataLength)))
         })
         neuron.setWeights(neuronWeights)
       })
@@ -878,7 +891,7 @@ addTransferFunction('rectifier', function rectifier (x) {
 
 function randomId () {
   return 'xxxxxxxxxxxx'.replace(/[x]/g, () => {
-    var r = Math.random()*16|0
+    var r = Math.random() * 16 | 0
     return r.toString(16)
   })
 }
@@ -897,6 +910,19 @@ function networkSum(X, Y, ignoreLayers) {
 function check (value, message) {
   if (isNaN(value)) {
     throw new Error(`Overflow: ${message}`)
+  }
+}
+
+function shuffle (array) {
+  var i = 0
+  var j = 0
+  var temp = null
+
+  for (i = array.length - 1; i > 0; i -= 1) {
+    j = Math.floor(Math.random() * (i + 1))
+    temp = array[i]
+    array[i] = array[j]
+    array[j] = temp
   }
 }
 
